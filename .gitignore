@@ -1,0 +1,11 @@
+# Material privado del docente: no se publica
+CLAUDE.md
+privado/
+
+# Sistema y herramientas
+.DS_Store
+Thumbs.db
+desktop.ini
+.ipynb_checkpoints/
+__pycache__/
+.claude/

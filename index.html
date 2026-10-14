@@ -1,0 +1,132 @@
+<!doctype html>
+<!-- Portal del curso. Los enlaces de semanas aún no publicadas se reemplazan solos por un aviso (assets/portal.js). -->
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programación Orientada a Objetos (Go)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Overpass+Mono:wght@400;600&family=Overpass:wght@400;600;700;800;900&display=swap">
+  <link rel="stylesheet" href="assets/presentacion.css">
+  <script src="assets/tema.js"></script>
+</head>
+<body class="portal" data-curso="poo-go">
+<header class="portal-cabecera">
+  <div class="portal-cabecera-contenido">
+    <div class="barra"><button type="button" class="boton" data-alternar-tema>Modo oscuro</button></div>
+    <h1>Programación Orientada a Objetos (Go)</h1>
+    <p>Aprendemos Go desde la sintaxis hasta los servicios web concurrentes, y lo aplicamos en un proyecto propio que crece durante todo el curso: un sistema de gestión del tema que tú elijas.</p>
+    <p><strong>Sesiones en vivo:</strong> lunes a las 19:00 por Microsoft Teams, del 26 de octubre al 13 de diciembre de 2026. Todas se graban.</p>
+  </div>
+</header>
+<main class="portal-contenido">
+  <h2>Cómo aprovechar cada semana</h2>
+  <ol class="pasos-semana">
+    <li><strong>Repasa con el tutor.</strong> Cópialo y pégalo completo en ChatGPT, Gemini o Claude. En 20–30 minutos te hace preguntas sobre el tema y al final te da un ticket de entrada con tu duda: envíalo en el <a href="https://forms.cloud.microsoft/r/ZhHFhJsKQE">formulario de tickets de entrada</a> hasta las 12:00 del día de la sesión.</li>
+    <li><strong>Ven a la sesión.</strong> Empezamos en punto con una pista para el Aprendizaje Práctico de la semana, practicamos con casos y resolvemos tus dudas en vivo.</li>
+    <li><strong>¿No pudiste ir?</strong> Mira la grabación, salta al bloque que necesites y haz el ejercicio individual del cierre.</li>
+  </ol>
+
+  <h2>Semanas</h2>
+  <table class="tabla-semanas">
+    <thead><tr><th>Sem.</th><th>Tema</th><th>Material</th><th>Vence</th></tr></thead>
+    <tbody>
+      <tr data-semana="semana-01">
+        <td>1</td>
+        <td>¿Qué es Go? Sintaxis, condicionales y ciclos<span class="fechas">Sesión: lunes 26 oct, 19:00</span></td>
+        <td>
+          <div class="acciones">
+            <a class="si-presentacion principal" href="semana-01/index.html">Presentación</a>
+            <span class="si-tutor acciones"><button type="button" data-copiar="semana-01/tutor.md">Copiar tutor</button><a href="ver.html?f=semana-01/tutor.md">Ver tutor</a></span>
+          </div>
+          <span class="aviso-copia" aria-live="polite"></span>
+        </td>
+        <td><span class="fechas">Domingo 1 nov</span>Aprendizaje Práctico</td>
+      </tr>
+      <tr data-semana="semana-02">
+        <td>2</td>
+        <td>Funciones y paquetes<span class="fechas">Sesión: lunes 2 nov, 19:00</span></td>
+        <td>
+          <div class="acciones">
+            <a class="si-presentacion principal" href="semana-02/index.html">Presentación</a>
+            <span class="si-tutor acciones"><button type="button" data-copiar="semana-02/tutor.md">Copiar tutor</button><a href="ver.html?f=semana-02/tutor.md">Ver tutor</a></span>
+          </div>
+          <span class="aviso-copia" aria-live="polite"></span>
+        </td>
+        <td><span class="fechas">Domingo 8 nov</span>Aprendizaje Práctico</td>
+      </tr>
+      <tr data-semana="semana-03">
+        <td>3</td>
+        <td>Arrays, slices y maps<span class="fechas">Sesión: lunes 9 nov, 19:00</span></td>
+        <td>
+          <div class="acciones">
+            <a class="si-presentacion principal" href="semana-03/index.html">Presentación</a>
+            <span class="si-tutor acciones"><button type="button" data-copiar="semana-03/tutor.md">Copiar tutor</button><a href="ver.html?f=semana-03/tutor.md">Ver tutor</a></span>
+          </div>
+          <span class="aviso-copia" aria-live="polite"></span>
+        </td>
+        <td><span class="fechas">Domingo 15 nov</span>Aprendizaje Práctico y <strong>Aprendizaje Autónomo 1</strong></td>
+      </tr>
+      <tr data-semana="semana-04">
+        <td>4</td>
+        <td>Objetos en Go: structs, métodos y constructores<span class="fechas">Sesión: lunes 16 nov, 19:00</span></td>
+        <td>
+          <div class="acciones">
+            <a class="si-presentacion principal" href="semana-04/index.html">Presentación</a>
+            <span class="si-tutor acciones"><button type="button" data-copiar="semana-04/tutor.md">Copiar tutor</button><a href="ver.html?f=semana-04/tutor.md">Ver tutor</a></span>
+          </div>
+          <span class="aviso-copia" aria-live="polite"></span>
+        </td>
+        <td><span class="fechas">Domingo 22 nov</span>Aprendizaje Práctico</td>
+      </tr>
+      <tr data-semana="semana-05">
+        <td>5</td>
+        <td>Encapsulación y manejo de errores<span class="fechas">Sesión: lunes 23 nov, 19:00</span></td>
+        <td>
+          <div class="acciones">
+            <a class="si-presentacion principal" href="semana-05/index.html">Presentación</a>
+            <span class="si-tutor acciones"><button type="button" data-copiar="semana-05/tutor.md">Copiar tutor</button><a href="ver.html?f=semana-05/tutor.md">Ver tutor</a></span>
+          </div>
+          <span class="aviso-copia" aria-live="polite"></span>
+        </td>
+        <td><span class="fechas">Domingo 29 nov</span>Aprendizaje Práctico</td>
+      </tr>
+      <tr data-semana="semana-06">
+        <td>6</td>
+        <td>Interfaces y polimorfismo<span class="fechas">Sesión: lunes 30 nov, 19:00</span></td>
+        <td>
+          <div class="acciones">
+            <a class="si-presentacion principal" href="semana-06/index.html">Presentación</a>
+            <span class="si-tutor acciones"><button type="button" data-copiar="semana-06/tutor.md">Copiar tutor</button><a href="ver.html?f=semana-06/tutor.md">Ver tutor</a></span>
+          </div>
+          <span class="aviso-copia" aria-live="polite"></span>
+        </td>
+        <td><span class="fechas">Domingo 6 dic</span>Aprendizaje Práctico y <strong>Aprendizaje Autónomo 2</strong></td>
+      </tr>
+      <tr data-semana="semana-07">
+        <td>7</td>
+        <td>Concurrencia, servicios web y testing<span class="fechas">Sesión: lunes 7 dic, 19:00</span></td>
+        <td>
+          <div class="acciones">
+            <a class="si-presentacion principal" href="semana-07/index.html">Presentación</a>
+            <span class="si-tutor acciones"><button type="button" data-copiar="semana-07/tutor.md">Copiar tutor</button><a href="ver.html?f=semana-07/tutor.md">Ver tutor</a></span>
+          </div>
+          <span class="aviso-copia" aria-live="polite"></span>
+        </td>
+        <td><span class="fechas">Domingo 13 dic</span>Aprendizaje Práctico y <strong>Evaluación en Contacto con el Docente</strong></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Trabajos calificados</h2>
+  <p>Todo es individual. Si el enunciado de la plataforma dice algo distinto, vale lo que dice la guía de cada trabajo.</p>
+  <ul class="lista-entregas">
+      <li><strong>Aprendizaje Autónomo 1</strong><span>Vence el domingo 15 de noviembre · 12 puntos</span><span class="detalle">Planeación de tu sistema de gestión: módulos, funciones y paquetes. <a href="ver.html?f=entregas/aa1.md">Guía y rúbrica</a></span></li>
+      <li><strong>Aprendizaje Autónomo 2</strong><span>Vence el domingo 6 de diciembre · 12 puntos</span><span class="detalle">Desarrollo del sistema con structs, encapsulación, errores e interfaces. <a href="ver.html?f=entregas/aa2.md">Guía y rúbrica</a></span></li>
+      <li><strong>Evaluación en Contacto con el Docente</strong><span>Vence el domingo 13 de diciembre · 34 puntos</span><span class="detalle">Tu sistema como aplicación web: servicios, JSON, concurrencia y pruebas. <a href="ver.html?f=entregas/ecd.md">Guía y rúbrica</a></span></li>
+  </ul>
+</main>
+<script src="assets/portal.js"></script>
+</body>
+</html>

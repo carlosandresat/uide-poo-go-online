@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programación Orientada a Objetos (Go) · Semana 1</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Overpass+Mono:wght@400;600&family=Overpass:wght@400;600;700;800;900&display=swap">
+  <link rel="stylesheet" href="../assets/presentacion.css">
+  <script src="../assets/tema.js"></script>
+</head>
+<body data-curso="poo-go" data-formato="taller">
+<div class="barra-lectura">
+  <a href="../index.html">Volver al curso</a>
+  <button type="button" class="boton" data-alternar-tema>Modo oscuro</button>
+</div>
+<main class="escenario">
+
+  <section class="diapositiva portada">
+    <div class="portada-panel">
+      <span>Semana</span>
+      <span class="semana-numero">1</span>
+      <span>de 7</span>
+    </div>
+    <div class="portada-texto">
+      <p class="curso">Programación Orientada a Objetos (Go)</p>
+      <h1>¿Qué es Go? Sintaxis, condicionales y ciclos</h1>
+      <p class="objetivo">Leer y escribir Go básico sin tropezar con su sintaxis, y elegir el sistema que construirás durante el curso.</p>
+      <p class="fecha">Lunes 26 de octubre · 19:00</p>
+      <div class="recorrido-completo"></div>
+    </div>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Cómo funciona este curso</h2>
+    <ul class="ideas">
+      <li data-paso="1"><span><strong>Antes de cada sesión</strong>, repasa con el tutor de la semana (20–30 minutos con ChatGPT, Gemini o Claude). Al final te da un ticket de entrada con tu duda: envíalo en el formulario del curso hasta las 12:00 del día de la sesión.</span></li>
+      <li data-paso="2"><span><strong>En la sesión</strong> empezamos en punto con una pista para el Aprendizaje Práctico del domingo, practicamos y resolvemos dudas. No se califica: vienes a ganar puntos en lo que sí se califica.</span></li>
+      <li data-paso="3"><span><strong>Si no puedes venir</strong>, la grabación queda disponible y el ejercicio individual está al final de cada presentación.</span></li>
+    </ul>
+    <p class="nota">Todo el material está en el sitio del curso: presentaciones, tutores, ejemplos y las guías de cada trabajo.</p>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Plan de hoy</h2>
+    <ol class="plan">
+      <li data-bloque="1">Pista para el Aprendizaje Práctico, tres ideas y una pregunta rápida.</li>
+      <li data-bloque="2">Le pedimos a la IA un menú en Go y lo leemos línea por línea.</li>
+      <li data-bloque="3">En salas, cada uno escribe el menú de su propio sistema. No se graba.</li>
+      <li data-bloque="4">El proyecto del curso y el Aprendizaje Autónomo 1. Luego, revisamos menús de voluntarios.</li>
+      <li data-bloque="5">Repaso para el domingo y cómo usar el tutor.</li>
+    </ol>
+  </section>
+
+  <!-- ============ BLOQUE 1 · PUENTE ============ -->
+
+  <section class="diapositiva bloque" data-bloque="1">
+    <span class="numero">1</span>
+    <div class="bloque-texto">
+      <h2></h2>
+      <p class="minutos"></p>
+    </div>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Para el Aprendizaje Práctico de este domingo</h2>
+    <p class="pista">Fíjate en la forma exacta de escribir Go: dónde van (y dónde no) los paréntesis, las llaves y los dos puntos; qué hace cada símbolo (=, ==, :=, &amp;, *); y cuántas veces gira un for.</p>
+    <p class="nota">Una pista, no la pregunta. El cuestionario vence el domingo 1 de noviembre.</p>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Tres ideas para llevarse</h2>
+    <ul class="ideas">
+      <li data-paso="1"><span>En Go el tipo va después del nombre: <code>var edad int</code>. Lo que no cambia se declara con <code>const</code>.</span></li>
+      <li data-paso="2"><span><code>=</code> asigna, <code>==</code> compara (también textos) y <code>:=</code> declara y asigna a la vez.</span></li>
+      <li data-paso="3"><span><code>if</code>, <code>switch</code> y <code>for</code> van sin paréntesis y con llaves. <code>for</code> es el único ciclo de Go.</span></li>
+    </ul>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Si vienes de Java o Python</h2>
+    <table class="tabla">
+      <thead><tr><th></th><th>Java</th><th>Python</th><th>Go</th></tr></thead>
+      <tbody>
+        <tr><td>Declarar</td><td><code>int edad = 20;</code></td><td><code>edad = 20</code></td><td><code>var edad int = 20</code><br><code>edad := 20</code></td></tr>
+        <tr><td>Condición</td><td><code>if (n &gt; 0) { }</code></td><td><code>if n &gt; 0:</code></td><td><code>if n &gt; 0 { }</code></td></tr>
+        <tr><td>Mientras</td><td><code>while (c) { }</code></td><td><code>while c:</code></td><td><code>for c { }</code></td></tr>
+        <tr><td><code>switch</code></td><td>cada <code>case</code> necesita <code>break</code></td><td><code>match</code> (3.10 o posterior)</td><td>sin <code>break</code>: no cae al siguiente</td></tr>
+        <tr><td>Comparar textos</td><td><code>a.equals(b)</code></td><td><code>a == b</code></td><td><code>a == b</code></td></tr>
+        <tr><td>Sin valor</td><td><code>null</code></td><td><code>None</code></td><td><code>nil</code></td></tr>
+      </tbody>
+    </table>
+    <p class="nota">En Java, <code>==</code> entre textos compara referencias; en Go compara el contenido, como en Python.</p>
+  </section>
+
+  <section class="diapositiva pregunta">
+    <p class="nota">Responde en el Forms del chat de la reunión</p>
+    <p class="enunciado">¿Cuántas veces imprime este ciclo?</p>
+    <pre><code>for i := 0; i &lt; 10; i += 3 {
+    fmt.Println(i)
+}</code></pre>
+    <ol class="opciones">
+      <li>3</li>
+      <li>4</li>
+      <li>10</li>
+      <li>No compila</li>
+    </ol>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Sigue la variable, paso a paso</h2>
+    <table class="tabla">
+      <thead><tr><th>Valor de i</th><th>¿i &lt; 10?</th><th>Imprime</th></tr></thead>
+      <tbody>
+        <tr data-paso="1"><td><code>0</code></td><td>sí</td><td class="resultado">0</td></tr>
+        <tr data-paso="2"><td><code>3</code></td><td>sí</td><td class="resultado">3</td></tr>
+        <tr data-paso="3"><td><code>6</code></td><td>sí</td><td class="resultado">6</td></tr>
+        <tr data-paso="4"><td><code>9</code></td><td>sí</td><td class="resultado">9</td></tr>
+        <tr data-paso="5" class="fin"><td><code>12</code></td><td>no</td><td>termina</td></tr>
+      </tbody>
+    </table>
+    <p data-paso="6">Imprime <mark>4 veces</mark>. Para contar las vueltas de un <code>for</code>, escribe los valores de la variable hasta que la condición sea falsa.</p>
+  </section>
+
+  <!-- ============ BLOQUE 2 · CASO EN VIVO ============ -->
+
+  <section class="diapositiva bloque" data-bloque="2">
+    <span class="numero">2</span>
+    <div class="bloque-texto">
+      <h2></h2>
+      <p class="minutos"></p>
+      <p>Le pedimos a la IA un menú en Go y lo leemos línea por línea con lo que sabemos.</p>
+    </div>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Le pedimos un menú a la IA</h2>
+    <div class="dos-columnas">
+      <pre class="prompt">Escribe en Go un programa de consola para gestionar libros electrónicos: un menú con 1) agregar libro, 2) ver resumen y 3) salir, que se repita hasta elegir salir. Máximo 3 libros. Usa for, switch e if.</pre>
+      <div>
+        <h3>Para interpretar su respuesta</h3>
+        <ul>
+          <li data-paso="1">¿Por qué <code>fmt.Scan</code> recibe <code>&amp;opcion</code> y no <code>opcion</code>?</li>
+          <li data-paso="2">¿Por qué ningún <code>case</code> termina en <code>break</code>?</li>
+          <li data-paso="3">¿Qué pasaría si en la opción 3 cambiamos <code>return</code> por <code>break</code>?</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Lo que respondió, leído con la teoría</h2>
+    <div class="dos-columnas" style="grid-template-columns: 1.25fr 1fr">
+      <pre class="compacto"><code>for {
+    var opcion int
+<span class="clave">    fmt.Scan(&amp;opcion)</span>
+    switch opcion {
+    case 1:
+        if cantidad == limite {
+            fmt.Println("Catálogo lleno")
+        } else { <span class="comentario">/* agrega el libro */</span> }
+    case 2:
+        fmt.Println("Libros:", cantidad)
+    case 3:
+<span class="clave">        return</span>
+    default:
+        fmt.Println("Opción no válida")
+    }
+}</code></pre>
+      <div style="display: flex; flex-direction: column; gap: calc(var(--u) * 3)">
+        <ul class="ideas compactas">
+          <li data-paso="1"><span><code>&amp;opcion</code> es la dirección de la variable: <code>Scan</code> la necesita para guardar lo que escribes.</span></li>
+          <li data-paso="2"><span>En Go un <code>case</code> no cae en el siguiente: no hace falta <code>break</code>.</span></li>
+          <li data-paso="3"><span><code>return</code> termina el programa. Un <code>break</code> ahí saldría solo del <code>switch</code> y el menú nunca terminaría.</span></li>
+        </ul>
+        <p class="nota">Código completo: <code>semana-01/ejemplos/menu/main.go</code>.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Qué hacen <code>&amp;</code> y <code>*</code> en la memoria</h2>
+    <div class="dos-columnas">
+      <pre><code><span class="linea-paso" data-paso="1">stock := 42</span>
+<span class="linea-paso" data-paso="2">p := &amp;stock  <span class="comentario">// dirección</span></span>
+<span class="linea-paso" data-paso="3">*p = 50      <span class="comentario">// cambia stock</span></span>
+<span class="linea-paso" data-paso="4">var q *int</span></code></pre>
+      <div class="memoria">
+        <div class="celda" data-paso="1">
+          <span class="nombre-var">stock · int</span>
+          <span class="valor"><span class="viejo">42</span><span class="nuevo" data-paso="3">50</span></span>
+          <span class="direccion">dirección 0xc000012080</span>
+        </div>
+        <div class="flecha-puntero" data-paso="2"><span>apunta a</span></div>
+        <div class="celda" data-paso="2">
+          <span class="nombre-var">p · *int</span>
+          <span class="valor direccion-valor"><span>0xc000012080</span></span>
+          <span class="direccion">guarda una dirección</span>
+        </div>
+        <div class="celda abajo-derecha" data-paso="4">
+          <span class="nombre-var">q · *int</span>
+          <span class="valor"><span>nil</span></span>
+          <span class="direccion">valor cero de un puntero</span>
+        </div>
+      </div>
+    </div>
+    <p class="nota">La dirección es ilustrativa: cambia en cada ejecución. Pruébalo con <code>semana-01/ejemplos/punteros/main.go</code>.</p>
+  </section>
+
+  <!-- ============ BLOQUE 3 · SALAS ============ -->
+
+  <section class="diapositiva bloque" data-bloque="3">
+    <span class="numero">3</span>
+    <div class="bloque-texto">
+      <h2></h2>
+      <p class="minutos"></p>
+      <p>La consigna queda en esta diapositiva y en el chat.</p>
+    </div>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Consigna</h2>
+    <ol class="plan">
+      <li><span class="min">0–5</span><span><strong>Tu sistema.</strong> Cada uno cuenta qué sistema de gestión construirá en el curso (el tema es libre) y nombra 3–4 cosas que hará.</span></li>
+      <li><span class="min">5–20</span><span><strong>Tu menú.</strong> Parte de <code>ejemplos/ejercicio-menu</code>: 3 opciones o más con <code>for</code> y <code>switch</code>, y una validación con <code>if / else</code>. Compila con <code>go run main.go</code>.</span></li>
+      <li><span class="min">20–30</span><span><strong>Retos, si terminaste.</strong> (1) Predice y comprueba los tres de <code>ejemplos/predice</code>. (2) Avisa si la opción no existe y pon un límite con <code>const</code>. (3) Agrega una opción que dibuje algo con un <code>for</code>.</span></li>
+    </ol>
+    <div class="consigna-pie">
+      <p class="nota">Antes de volver, anota una duda. ¿Quieres mostrar tu trabajo en la plenaria? Avísame por chat.</p>
+      <button class="temporizador" type="button" data-minutos="30" aria-label="Temporizador de la consigna"></button>
+    </div>
+  </section>
+
+  <!-- ============ BLOQUE 4 · PLENARIA ============ -->
+
+  <section class="diapositiva bloque" data-bloque="4">
+    <span class="numero">4</span>
+    <div class="bloque-texto">
+      <h2></h2>
+      <p class="minutos"></p>
+      <p>Primero, el proyecto del curso y el Aprendizaje Autónomo 1. Después, revisamos menús de voluntarios.</p>
+    </div>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Un proyecto, tres entregas</h2>
+    <ul class="cierre-lista">
+      <li data-paso="1"><span class="que">Aprendizaje Autónomo 1 · 15 nov</span><span>Eliges tu sistema y diseñas sus módulos, funciones y paquetes.</span></li>
+      <li data-paso="2"><span class="que">Aprendizaje Autónomo 2 · 6 dic</span><span>Lo programas con structs, encapsulación, errores e interfaces.</span></li>
+      <li data-paso="3"><span class="que">Evaluación en Contacto con el Docente · 13 dic</span><span>Lo conviertes en una aplicación web con al menos 8 servicios, concurrencia y pruebas.</span></li>
+    </ul>
+    <p data-paso="4"><strong>Elige un sistema que dé para al menos 8 funcionalidades distintas: las vas a necesitar al final.</strong></p>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Aprendizaje Autónomo 1</h2>
+    <div class="dos-columnas">
+      <div>
+        <h3>Qué entregas</h3>
+        <ul>
+          <li>PDF con objetivo, alcance, módulos y una tabla de funciones por módulo.</li>
+          <li>Repositorio de GitHub con <code>go.mod</code>, tus paquetes y un <code>README.md</code>. Debe compilar.</li>
+          <li>Video de 3–5 minutos que explique tu sistema.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Aclaraciones al enunciado</h3>
+        <ul>
+          <li>El <strong>tema es libre</strong>: libros electrónicos, <em>streaming</em> y <em>e-commerce</em> son solo ejemplos.</li>
+          <li>Es <strong>individual</strong>, aunque la plataforma diga «grupo».</li>
+          <li>«Programación funcional» quiere decir organizado en funciones y paquetes, sin structs todavía.</li>
+          <li>Vence el <strong>domingo 15 de noviembre</strong>.</li>
+        </ul>
+        <p><a href="../ver.html?f=entregas/aa1.md">Guía completa y rúbrica</a></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Revisamos tu menú</h2>
+    <ul class="ideas">
+      <li><span>¿Compila con <code>go run main.go</code>?</span></li>
+      <li><span>¿La opción de salir termina el programa, o el menú se repite para siempre?</span></li>
+      <li><span>¿Qué pasa si escribo una opción que no existe?</span></li>
+      <li><span>¿Las opciones del menú anticipan las funcionalidades de tu Aprendizaje Autónomo 1?</span></li>
+    </ul>
+    <p class="nota">Solo participa quien se ofrece. Recuerda que esta parte se graba.</p>
+  </section>
+
+  <!-- ============ BLOQUE 5 · CIERRE ============ -->
+
+  <section class="diapositiva bloque" data-bloque="5">
+    <span class="numero">5</span>
+    <div class="bloque-texto">
+      <h2></h2>
+      <p class="minutos"></p>
+      <p>Repaso para el domingo y cómo usar el tutor.</p>
+    </div>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Tipos y valores cero</h2>
+    <table class="tabla">
+      <thead><tr><th>Tipo</th><th>Qué guarda</th><th>Valor cero</th></tr></thead>
+      <tbody>
+        <tr><td><code>int</code></td><td>enteros (64 bits en las computadoras actuales)</td><td class="resultado">0</td></tr>
+        <tr><td><code>int8</code></td><td>enteros con signo de −128 a 127</td><td class="resultado">0</td></tr>
+        <tr><td><code>byte</code> = <code>uint8</code></td><td>enteros sin signo de 0 a 255</td><td class="resultado">0</td></tr>
+        <tr><td><code>float64</code></td><td>decimales; el tipo por defecto de <code>3.14</code></td><td class="resultado">0</td></tr>
+        <tr><td><code>float32</code></td><td>decimales con menos precisión</td><td class="resultado">0</td></tr>
+        <tr><td><code>string</code></td><td>texto (no existen <code>char</code> ni <code>str</code>)</td><td class="resultado">""</td></tr>
+        <tr><td><code>bool</code></td><td><code>true</code> o <code>false</code></td><td class="resultado">false</td></tr>
+        <tr><td><code>*int</code></td><td>la dirección de un <code>int</code></td><td class="resultado">nil</td></tr>
+      </tbody>
+    </table>
+    <p class="nota">Comentarios: <code>// una línea</code> y <code>/* varias líneas */</code>.</p>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Operadores que confunden</h2>
+    <table class="tabla">
+      <thead><tr><th>Expresión</th><th>Resultado</th><th>Por qué</th></tr></thead>
+      <tbody>
+        <tr><td><code>2 + 3*4</code></td><td class="resultado" data-paso="1">14</td><td data-paso="1">la multiplicación va primero</td></tr>
+        <tr><td><code>(2 + 3) * 4</code></td><td class="resultado" data-paso="2">20</td><td data-paso="2">los paréntesis cambian el orden</td></tr>
+        <tr><td><code>17 / 5</code></td><td class="resultado" data-paso="3">3</td><td data-paso="3">entre enteros se descartan los decimales</td></tr>
+        <tr><td><code>17 % 5</code></td><td class="resultado" data-paso="4">2</td><td data-paso="4">el residuo; <code>n % 2 == 0</code> indica par</td></tr>
+        <tr><td><code>17.0 / 5</code></td><td class="resultado" data-paso="5">3.4</td><td data-paso="5">con un decimal, el resultado es <code>float64</code></td></tr>
+        <tr><td><code>"Hola, " + "Go"</code></td><td class="resultado" data-paso="6">"Hola, Go"</td><td data-paso="6"><code>+</code> une cadenas; <code>==</code> las compara</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Decidir: <code>else if</code> y <code>switch</code></h2>
+    <div class="dos-columnas">
+      <div>
+        <pre><code>if nota &gt;= 9 {
+    fmt.Println("Excelente")
+} else if nota &gt;= 7 {
+    fmt.Println("Aprobado")
+} else {
+    fmt.Println("Reprobado")
+}</code></pre>
+        <p class="nota" style="margin-top: 1em">Se ejecuta solo la primera rama verdadera, de arriba abajo.</p>
+      </div>
+      <div>
+        <pre><code>switch formato {
+case "ebook", "pdf":
+    fmt.Println("digital")
+case "tapa dura":
+    fmt.Println("físico")
+default:
+    fmt.Println("desconocido")
+}</code></pre>
+        <p class="nota" style="margin-top: 1em">Sin paréntesis ni <code>break</code>. Varios valores en un <code>case</code>, separados por comas.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Cómo usar el tutor</h2>
+    <ol>
+      <li>Abre el sitio del curso y pulsa <strong>Copiar tutor</strong> en la semana que corresponde.</li>
+      <li>Pégalo completo en ChatGPT, Gemini o Claude (sirve la versión gratuita).</li>
+      <li>Conversa 20–30 minutos. Te hará preguntas y no te dará respuestas: está hecho para que pienses.</li>
+      <li>Al final, envía tu ticket de entrada en el <a href="https://forms.cloud.microsoft/r/ZhHFhJsKQE">formulario de tickets</a> hasta las 12:00 del día de la sesión. El enlace también está en el tutor, el anuncio y el sitio del curso.</li>
+    </ol>
+    <p class="nota">Si tienes poco tiempo, escribe RÁPIDO al empezar: irá directo a las preguntas de control.</p>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Antes de irnos</h2>
+    <ul class="cierre-lista">
+      <li><span class="que">Este domingo, 1 nov</span><span>Aprendizaje Práctico de la semana 1.</span></li>
+      <li><span class="que">Tu proyecto</span><span>Elige tu sistema. El Aprendizaje Autónomo 1 vence el 15 de noviembre.</span></li>
+      <li><span class="que">Si ves la grabación</span><span>Escribe el menú de tu sistema con <code>ejemplos/ejercicio-menu</code> y comprueba que compila, que la opción de salir termina el programa y que una opción inexistente muestra un aviso. Luego predice y comprueba los retos de <code>ejemplos/predice</code>.</span></li>
+      <li><span class="que">Próxima semana</span><span>Funciones y paquetes. El lunes 2 de noviembre es feriado: la sesión se da igual y se graba. Antes, usa el <a href="../ver.html?f=semana-02/tutor.md">tutor de la semana 2</a>.</span></li>
+    </ul>
+  </section>
+
+</main>
+<script src="../assets/secuencia.js"></script>
+<script src="../assets/presentacion.js"></script>
+</body>
+</html>
