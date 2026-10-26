@@ -1,9 +1,11 @@
 /* Motor de presentaciones de sesión · Cursos UIDE · diseño «Señalética»
    Teclas: → / Espacio / AvPág avanza · ← / RePág retrocede · Inicio / Fin · F pantalla completa
-           D modo claro/oscuro · L modo lectura · T inicia o pausa el temporizador de la diapositiva
+           D modo claro/oscuro · P puntero rojo (en tema.js) · L modo lectura · T inicia o pausa el temporizador de la diapositiva
    Atributos:
-     <body data-curso="poo-go" data-formato="taller|clinica" data-bloque4="Ejercicio aplicado">
-     <section class="diapositiva" data-bloque="1..5"> (si falta, hereda el de la anterior)
+     <body data-curso="poo-go" data-formato="taller|clinica|debate" data-bloque4="Ejercicio aplicado">
+       (clínica: data-bloque4 nombra el bloque 4; debate: data-trabajo pone la explicación del trabajo en lugar de la pausa)
+     <section class="diapositiva" data-bloque="3"> o data-bloque="salas1": número o id del bloque
+       (si falta, hereda el de la anterior). En las portadas de bloque, .numero, h2 y .minutos vacíos se completan solos.
      data-paso="n" en cualquier elemento: aparece en el paso n de esa diapositiva
      <div class="recorrido-completo"></div> en la portada: el motor dibuja el recorrido de la sesión
    Animaciones propias: escuchar el evento "paso" en la diapositiva:
@@ -14,31 +16,60 @@
 
   const body = document.body;
   const escenario = document.querySelector('.escenario');
-  const diapositivas = Array.from(document.querySelectorAll('.diapositiva'));
+  let diapositivas = Array.from(document.querySelectorAll('.diapositiva'));
   if (!escenario || diapositivas.length === 0) return;
 
   if (window.Secuencia) window.Secuencia.renderTodas(escenario);
 
+  // Cada bloque: id (para data-bloque), nombre, corto (etiqueta en la línea de metro, opcional),
+  // minutos y noGraba (salas de Teams). Los números se asignan en orden, sin contar la pausa.
+  const conTrabajo = body.hasAttribute('data-trabajo');
   const BLOQUES = {
     taller: [
-      { n: 1, nombre: 'Puente', ini: 0, fin: 10 },
-      { n: 2, nombre: 'Caso en vivo', ini: 10, fin: 25 },
-      { n: 3, nombre: 'Salas', ini: 25, fin: 55 },
+      { id: 'puente', nombre: 'Puente', ini: 0, fin: 10 },
+      { id: 'caso', nombre: 'Caso en vivo', ini: 10, fin: 25 },
+      { id: 'salas', nombre: 'Salas', ini: 25, fin: 55, noGraba: true },
       { pausa: true, ini: 55, fin: 60 },
-      { n: 4, nombre: 'Plenaria', ini: 60, fin: 100 },
-      { n: 5, nombre: 'Cierre', ini: 100, fin: 120 },
+      { id: 'plenaria', nombre: 'Plenaria', ini: 60, fin: 100 },
+      { id: 'cierre', nombre: 'Cierre', ini: 100, fin: 120 },
     ],
     clinica: [
-      { n: 1, nombre: 'Puente', ini: 0, fin: 10 },
-      { n: 2, nombre: 'Caso en vivo', ini: 10, fin: 30 },
-      { n: 3, nombre: 'Clínica', ini: 30, fin: 70 },
+      { id: 'puente', nombre: 'Puente', ini: 0, fin: 10 },
+      { id: 'caso', nombre: 'Caso en vivo', ini: 10, fin: 30 },
+      { id: 'clinica', nombre: 'Clínica', ini: 30, fin: 70 },
       { pausa: true, ini: 70, fin: 75 },
-      { n: 4, nombre: body.dataset.bloque4 || 'Ejercicio aplicado', ini: 75, fin: 105 },
-      { n: 5, nombre: 'Cierre', ini: 105, fin: 120 },
+      { id: 'aplicado', nombre: body.dataset.bloque4 || 'Ejercicio aplicado', ini: 75, fin: 105 },
+      { id: 'cierre', nombre: 'Cierre', ini: 105, fin: 120 },
+    ],
+    // Debate en dos rondas. Con data-trabajo, la explicación del trabajo calificado reemplaza la pausa.
+    debate: [
+      { id: 'puente', nombre: 'Puente', ini: 0, fin: 10 },
+      { id: 'caso', nombre: 'Caso en vivo', ini: 10, fin: 25 },
+      { id: 'salas1', nombre: 'Salas: investigar', corto: 'Investigar', ini: 25, fin: 40, noGraba: true },
+      { id: 'plenaria1', nombre: 'Plenaria: evidencias', corto: 'Evidencias', ini: 40, fin: 55 },
+      conTrabajo
+        ? { id: 'trabajo', nombre: 'Trabajo calificado', corto: 'Trabajo', ini: 55, fin: 75 }
+        : { pausa: true, ini: 55, fin: 60 },
+      { id: 'salas2', nombre: 'Salas: argumentar', corto: 'Argumentar', ini: conTrabajo ? 75 : 60, fin: conTrabajo ? 90 : 75, noGraba: true },
+      { id: 'plenaria2', nombre: 'Plenaria: debate', corto: 'Debate', ini: conTrabajo ? 90 : 75, fin: conTrabajo ? 105 : 100 },
+      { id: 'cierre', nombre: 'Cierre', ini: conTrabajo ? 105 : 100, fin: 120 },
     ],
   };
   const bloques = BLOQUES[body.dataset.formato] || BLOQUES.taller;
-  const bloquePorNumero = (n) => bloques.find((b) => b.n === n);
+  let numero = 0;
+  bloques.forEach((b) => { if (!b.pausa) b.n = ++numero; });
+  // data-bloque acepta el número ("3") o el id ("salas1")
+  const resolverBloque = (valor) => (valor == null ? undefined
+    : bloques.find((b) => !b.pausa && (b.id === valor || String(b.n) === String(valor))));
+  const proximoDe = (b) => bloques.slice(bloques.indexOf(b) + 1).find((x) => !x.pausa);
+
+  // Un bloque que el formato no tiene (p. ej., «trabajo» sin data-trabajo) se quita con sus diapositivas
+  let fuera = false;
+  diapositivas = diapositivas.filter((d) => {
+    if (d.dataset.bloque) fuera = !resolverBloque(d.dataset.bloque);
+    if (fuera) d.remove();
+    return !fuera;
+  });
   const crear = (etiqueta, clase, texto) => {
     const e = document.createElement(etiqueta);
     if (clase) e.className = clase;
@@ -50,8 +81,8 @@
 
   // Plan de la sesión: minutos y nombre de cada bloque
   document.querySelectorAll('.plan li[data-bloque]').forEach((li) => {
-    const b = bloquePorNumero(Number(li.dataset.bloque));
-    if (!b) return;
+    const b = resolverBloque(li.dataset.bloque);
+    if (!b) { li.remove(); return; } // p. ej., «trabajo» en una semana sin trabajo calificado
     const texto = crear('span');
     texto.append(crear('strong', null, b.nombre + '. '), ...li.childNodes);
     li.replaceChildren(crear('span', 'min', `${b.ini}–${b.fin}`), texto);
@@ -59,14 +90,16 @@
 
   // Portadas de bloque: nombre, minutos y letrero de lo que sigue
   diapositivas.filter((d) => d.classList.contains('bloque')).forEach((d) => {
-    const b = bloquePorNumero(Number(d.dataset.bloque));
+    const b = resolverBloque(d.dataset.bloque);
     if (!b) return;
+    const num = d.querySelector('.numero');
+    if (num && !num.textContent.trim()) num.textContent = b.n;
     const h2 = d.querySelector('h2');
     if (h2 && !h2.textContent.trim()) h2.textContent = b.nombre;
-    const nota = d.dataset.nota || (body.dataset.formato !== 'clinica' && b.n === 3 ? 'esta parte no se graba' : '');
+    const nota = d.dataset.nota || (b.noGraba ? 'esta parte no se graba' : '');
     const min = d.querySelector('.minutos');
     if (min && !min.textContent.trim()) min.textContent = `Minutos ${b.ini} a ${b.fin}` + (nota ? ` · ${nota}` : '');
-    const proximo = bloquePorNumero(b.n + 1);
+    const proximo = proximoDe(b);
     if (proximo && !d.querySelector('.siguiente')) {
       const letrero = crear('div', 'siguiente');
       const hayPausa = bloques.some((x) => x.pausa && x.ini === b.fin);
@@ -79,7 +112,7 @@
 
   // Recorrido de la sesión como línea de metro
   function construirRecorrido(completo) {
-    const r = crear('div', 'recorrido');
+    const r = crear('div', 'recorrido' + (numero > 5 ? ' muchas' : ''));
     const total = bloques[bloques.length - 1].fin;
     const paradas = bloques.map((b, k) => {
       const p = crear('div', 'parada' + (b.pausa ? ' pausa' : '') + (k === bloques.length - 1 ? ' ultima' : ''));
@@ -88,7 +121,7 @@
       p.style.flexBasis = '0';
       if (!b.pausa) {
         p.append(crear('span', 'estacion'));
-        p.append(crear('span', 'nombre', `${b.n} ${b.nombre}`));
+        p.append(crear('span', 'nombre', `${b.n} ${b.corto || b.nombre}`));
         if (completo) p.append(crear('span', 'inicio', `min ${b.ini}`));
         p.title = `${b.nombre}: minutos ${b.ini}–${b.fin} de ${total}`;
       } else {
@@ -133,9 +166,11 @@
   const pasosMax = diapositivas.map((d) =>
     Math.max(0, ...Array.from(d.querySelectorAll('[data-paso]')).map((e) => Number(e.dataset.paso) || 0)));
 
+  // Posición (en el arreglo de bloques) del bloque de cada diapositiva; -1 antes del primero
   const bloqueDe = [];
   diapositivas.forEach((d, i) => {
-    bloqueDe[i] = d.dataset.bloque ? Number(d.dataset.bloque) : (i > 0 ? bloqueDe[i - 1] : 0);
+    const b = resolverBloque(d.dataset.bloque);
+    bloqueDe[i] = b ? bloques.indexOf(b) : (i > 0 ? bloqueDe[i - 1] : -1);
   });
 
   let indice = 0;
@@ -143,10 +178,9 @@
 
   function actualizarRecorrido() {
     const actual = bloqueDe[indice];
-    fijo.paradas.forEach(({ p, b }) => {
-      const n = b.pausa ? (bloques.find((x) => x.ini === b.fin) || {}).n - 0.5 : b.n;
-      p.classList.toggle('actual', !b.pausa && b.n === actual);
-      p.classList.toggle('pasada', actual > 0 && n < actual);
+    fijo.paradas.forEach(({ p }, k) => {
+      p.classList.toggle('actual', k === actual);
+      p.classList.toggle('pasada', actual >= 0 && k < actual);
     });
     contador.textContent = `${indice + 1} / ${diapositivas.length}`;
   }
@@ -257,6 +291,9 @@
   if (desdeHash > 0) indice = desdeHash - 1;
   pantallaAngosta.addEventListener('change', aplicarModo);
   aplicarModo();
+  // Los scripts de animación (anim-*.js) se cargan después de este: al terminar la carga se repite el aviso
+  // de paso para que dibujen el estado correcto (en modo lectura, el final).
+  window.addEventListener('load', aplicarModo);
 
   window.Presentacion = { ir: (n) => mostrar(n - 1, 0), avanzar, retroceder };
 })();

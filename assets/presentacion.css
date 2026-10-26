@@ -122,6 +122,7 @@ mark {
 }
 
 code {
+  font-variant-ligatures: none;
   font-family: var(--f-codigo);
   font-size: 0.88em;
   background: var(--superficie);
@@ -132,6 +133,7 @@ code {
 pre {
   margin: 0;
   font-family: var(--f-codigo);
+  font-variant-ligatures: none; /* Overpass Mono convierte <- en flecha: en Go el operador debe verse tal cual */
   font-size: calc(var(--u) * 3.1);
   line-height: 1.5;
   background: var(--codigo-fondo);
@@ -494,6 +496,11 @@ pre .linea-paso { display: inline-block; width: 100%; }
 .recorrido-completo .parada .inicio { font-family: var(--f-codigo); font-size: calc(var(--u) * 1.9); color: var(--tinta-suave); }
 .recorrido-completo .parada::before { border-top-color: var(--acento); }
 .recorrido-completo .parada.ultima { align-items: flex-end; text-align: right; flex-direction: column; }
+/* Formato debate (7–8 estaciones): los nombres de la portada pasan a dos líneas si hace falta */
+.recorrido-completo .parada.ultima { justify-content: flex-start; }
+.recorrido-completo .recorrido.muchas { font-size: calc(var(--u) * 1.95); }
+.recorrido-completo .recorrido.muchas .parada .nombre { white-space: normal; max-width: 100%; padding-right: calc(var(--u) * 0.5); line-height: 1.15; }
+.recorrido-completo .recorrido.muchas .parada.ultima .nombre { padding-right: 0; }
 .recorrido-titulo { font-size: calc(var(--u) * 2.3); font-weight: 700; color: var(--tinta-suave); margin-bottom: calc(var(--u) * 1.8); }
 
 /* ---------- Controles (abajo a la derecha, discretos) ---------- */
@@ -619,13 +626,14 @@ body.lectura { background: var(--fondo); }
 .lectura .ideas li, .lectura .opciones, .lectura .pista, .lectura .plan li, .lectura .cierre-lista li { font-size: 1.1rem; }
 .lectura .pregunta .enunciado { font-size: 1.4rem; }
 .lectura .opciones li::before { width: 2.2rem; height: 2.2rem; }
-.lectura pre { font-size: 0.85rem; }
+.lectura pre { font-size: 0.85rem; max-width: 100%; overflow-x: auto; }
 .lectura .prompt { font-size: 1rem; }
 .lectura .dos-columnas, .lectura .opciones { grid-template-columns: 1fr !important; } /* !important: gana a los estilos en línea de cada diapositiva */
 .lectura .plan li, .lectura .cierre-lista li { grid-template-columns: 1fr; gap: 0.15rem; }
 .lectura .plan .min { font-size: 0.95rem; }
 .lectura .temporizador { font-size: 2.5rem; }
-.lectura .tabla { font-size: 0.95rem; }
+.lectura .tabla { font-size: 0.95rem; display: block; max-width: 100%; overflow-x: auto; } /* en el celular, la tabla se desplaza sola en vez de ensanchar la página */
+.lectura .dos-columnas > * { min-width: 0; }
 .lectura .tabla th { font-size: 0.8rem; }
 .lectura pre.compacto, .lectura .pregunta pre { font-size: 0.85rem; }
 .lectura .memoria { grid-template-columns: 1fr 2.5rem 1fr; }
@@ -791,3 +799,6 @@ body.portal { background: var(--fondo); }
 .documento blockquote { margin: 1em 0; padding: 0.2em 1em; border-left: 6px solid var(--acento); background: var(--superficie); }
 .documento .tabla-scroll { overflow-x: auto; }
 .barra-documento { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; margin-bottom: 28px; }
+
+/* Las animaciones escriben código en SVG: sin ligaduras, como en los bloques de código */
+.diapositiva svg text { font-variant-ligatures: none; }
