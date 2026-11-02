@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programación Orientada a Objetos (Go) · Semana 2</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Overpass+Mono:wght@400;600&family=Overpass:wght@400;600;700;800;900&display=swap">
+  <link rel="stylesheet" href="../assets/presentacion.css">
+  <script src="../assets/tema.js"></script>
+</head>
+<body data-curso="poo-go" data-formato="taller">
+<div class="barra-lectura">
+  <a href="../index.html">Volver al curso</a>
+  <button type="button" class="boton" data-alternar-tema>Modo oscuro</button>
+</div>
+<main class="escenario">
+
+  <section class="diapositiva portada">
+    <div class="portada-panel">
+      <span>Semana</span>
+      <span class="semana-numero">2</span>
+      <span>de 7</span>
+    </div>
+    <div class="portada-texto">
+      <p class="curso">Programación Orientada a Objetos (Go)</p>
+      <h1>Funciones y paquetes</h1>
+      <p class="objetivo">Leer y escribir firmas de funciones con varios retornos, y organizar tu sistema en paquetes dentro de un módulo.</p>
+      <p class="fecha">Lunes 2 de noviembre · 19:00 · feriado: la sesión se da y se graba igual</p>
+      <div class="recorrido-completo"></div>
+    </div>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Plan de hoy</h2>
+    <ol class="plan">
+      <li data-bloque="1">Pista para el Aprendizaje Práctico, tres ideas y una pregunta rápida.</li>
+      <li data-bloque="2">Le pedimos a la IA un inventario organizado en paquetes y lo leemos con la teoría.</li>
+      <li data-bloque="3">En salas, cada uno crea un paquete de su propio sistema. No se graba.</li>
+      <li data-bloque="4">Otros tipos de funciones y revisión de paquetes de voluntarios.</li>
+      <li data-bloque="5">Firmas que compilan y firmas que no, el módulo y el tutor de la semana 3.</li>
+    </ol>
+  </section>
+
+  <!-- ============ BLOQUE 1 · PUENTE ============ -->
+
+  <section class="diapositiva bloque" data-bloque="1">
+    <span class="numero">1</span>
+    <div class="bloque-texto">
+      <h2></h2>
+      <p class="minutos"></p>
+    </div>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Para el Aprendizaje Práctico de este domingo</h2>
+    <p class="pista">Fíjate en la firma completa de una función: la palabra clave con que empieza, dónde va cada tipo, cómo se escriben varios retornos y cuántos argumentos necesita la llamada. Y en el módulo: qué comando lo crea, qué se importa y qué hay que descargar.</p>
+    <p class="nota">Una pista, no la pregunta. El cuestionario vence el domingo 8 de noviembre.</p>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Tres ideas para llevarse</h2>
+    <ul class="ideas">
+      <li data-paso="1"><span>Una función se declara con <code>func</code>, el nombre, los parámetros (nombre y luego tipo) y el tipo de retorno: <code>func area(ancho, alto float64) float64</code>.</span></li>
+      <li data-paso="2"><span>Varios retornos van entre paréntesis y separados por comas, <code>(int, bool)</code>, y se reciben en el mismo orden: <code>total, ok := f()</code>.</span></li>
+      <li data-paso="3"><span>Un paquete es una carpeta. Se importa por su ruta, <code>"tienda/inventario"</code>, y desde fuera solo se ve lo que empieza con mayúscula.</span></li>
+    </ul>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Si vienes de Java o Python</h2>
+    <table class="tabla">
+      <thead><tr><th></th><th>Java</th><th>Python</th><th>Go</th></tr></thead>
+      <tbody>
+        <tr><td>Declarar</td><td><code>int doble(int x) { }</code></td><td><code>def doble(x):</code></td><td><code>func doble(x int) int { }</code></td></tr>
+        <tr><td>No devuelve nada</td><td><code>void</code></td><td>sin <code>return</code></td><td>sin tipo de retorno</td></tr>
+        <tr><td>Varios retornos</td><td>una clase o un arreglo</td><td>una tupla</td><td><code>(int, string)</code></td></tr>
+        <tr><td>Valores por defecto o sobrecarga</td><td>sobrecarga</td><td><code>def f(x=1)</code></td><td>no existen</td></tr>
+        <tr><td>Público y privado</td><td><code>public</code> / <code>private</code></td><td>convención <code>_nombre</code></td><td>Mayúscula / minúscula</td></tr>
+        <tr><td>Biblioteca externa</td><td>Maven o Gradle</td><td><code>pip install</code></td><td><code>go get</code></td></tr>
+      </tbody>
+    </table>
+    <p class="nota">Lo que viene con Go (<code>fmt</code>, <code>strings</code>, <code>strconv</code>, <code>math</code>) se importa sin descargar nada.</p>
+  </section>
+
+  <section class="diapositiva pregunta">
+    <p class="nota">Responde en el Forms del chat de la reunión</p>
+    <p class="enunciado">¿Qué imprime este programa?</p>
+    <div class="dos-columnas" style="grid-template-columns: 1.8fr 1fr; align-items: center">
+    <pre style="font-size: calc(var(--u) * 2.9)"><code>func precioFinal(precio float64,
+    cantidad int) (float64, bool) {
+    total := precio * float64(cantidad)
+    return total, total &gt; 50
+}
+
+func main() {
+    t, envioGratis := precioFinal(12.5, 4)
+    fmt.Println(envioGratis, t)
+}</code></pre>
+    <ol class="opciones" style="grid-template-columns: 1fr">
+      <li>true 50</li>
+      <li>false 50</li>
+      <li>50 false</li>
+      <li>No compila</li>
+    </ol>
+    </div>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Sigue los valores, paso a paso</h2>
+    <table class="tabla">
+      <thead><tr><th>Paso</th><th>Qué pasa</th><th>Valor</th></tr></thead>
+      <tbody>
+        <tr data-paso="1"><td>1</td><td><code>12.5</code> se copia en <code>precio</code> y <code>4</code> en <code>cantidad</code></td><td class="resultado">precio = 12.5 · cantidad = 4</td></tr>
+        <tr data-paso="2"><td>2</td><td><code>float64(cantidad)</code> convierte el entero para poder multiplicar</td><td class="resultado">total = 50</td></tr>
+        <tr data-paso="3"><td>3</td><td><code>total &gt; 50</code>: 50 no es mayor que 50</td><td class="resultado">false</td></tr>
+        <tr data-paso="4"><td>4</td><td>Vuelven en orden: el 1.º a <code>t</code>, el 2.º a <code>envioGratis</code></td><td class="resultado">t = 50 · envioGratis = false</td></tr>
+        <tr data-paso="5" class="fin"><td>5</td><td><code>Println</code> imprime en el orden en que recibe los argumentos</td><td>false 50</td></tr>
+      </tbody>
+    </table>
+    <p data-paso="6">Respuesta: <mark>false 50</mark>. El orden de los retornos lo fija la firma; el orden de lo impreso, la llamada a <code>Println</code>. Y Go no multiplica <code>float64</code> por <code>int</code> sin convertir.</p>
+  </section>
+
+  <!-- ============ BLOQUE 2 · CASO EN VIVO ============ -->
+
+  <section class="diapositiva bloque" data-bloque="2">
+    <span class="numero">2</span>
+    <div class="bloque-texto">
+      <h2></h2>
+      <p class="minutos"></p>
+      <p>Le pedimos a la IA un inventario organizado en paquetes y lo leemos con lo que sabemos.</p>
+    </div>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Le pedimos un inventario a la IA</h2>
+    <div class="dos-columnas">
+      <pre class="prompt">Organiza en Go un pequeño inventario: un módulo llamado tienda con un paquete inventario que tenga una función para agregar unidades, otra que diga si alcanza para un pedido y cuántas faltan, y una validación interna que no se pueda usar desde fuera. Escribe también el main que lo usa.</pre>
+      <div>
+        <h3>Para interpretar su respuesta</h3>
+        <ul>
+          <li data-paso="1">¿Por qué <code>Disponible</code> empieza con mayúscula y <code>validar</code> no?</li>
+          <li data-paso="2">¿Qué escribe <code>main</code> en el <code>import</code>: el archivo o la carpeta?</li>
+          <li data-paso="3">¿Qué pasa con lo que devuelve <code>Agregar</code> si no lo guardamos?</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Lo que respondió, leído con la teoría</h2>
+    <div class="dos-columnas" style="grid-template-columns: 1.3fr 1fr">
+      <pre class="compacto"><code><span class="comentario">// inventario/inventario.go</span>
+package inventario
+
+func Agregar(unidades int) int { … }
+<span class="clave">func Disponible(pedido int) (bool, int) {</span>
+    if pedido &lt;= Stock {
+        return true, 0
+    }
+    return false, pedido - Stock
+}
+<span class="clave">func validar(unidades int) bool {</span>
+    return unidades &gt; 0
+}</code></pre>
+      <div style="display: flex; flex-direction: column; gap: calc(var(--u) * 3)">
+        <ul class="ideas compactas">
+          <li data-paso="1"><span>Mayúscula: se exporta, y <code>main</code> la llama como <code>inventario.Disponible(18)</code>. <code>validar</code> queda oculta.</span></li>
+          <li data-paso="2"><span><code>main</code> importa <code>"tienda/inventario"</code>: el módulo más la carpeta, nunca <code>inventario.go</code>.</span></li>
+          <li data-paso="3"><span>Llamar sin guardar compila, pero el total se pierde. Para usarlo: <code>total := inventario.Agregar(5)</code>.</span></li>
+        </ul>
+        <p class="nota">Código completo: <code>ejemplos/inventario</code> (<code>go run .</code>).</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Qué pasa en una llamada</h2>
+    <div class="dos-columnas" style="grid-template-columns: 1.7fr 1fr">
+      <figure id="anim-llamada"></figure>
+      <ul class="ideas compactas">
+        <li data-paso="1"><span><code>duracion</code> se <strong>copia</strong> en <code>minutos</code>: son dos variables distintas.</span></li>
+        <li data-paso="2"><span>Entre enteros, <code>/</code> descarta los decimales y <code>%</code> da el residuo.</span></li>
+        <li data-paso="3"><span>Vuelven en el orden de la firma: el 1.º a <code>h</code>, el 2.º a <code>m</code>.</span></li>
+        <li data-paso="4"><span>Al terminar, <code>minutos</code> desaparece. En <code>main</code> quedan 3 y 20.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Módulo, paquetes y comandos</h2>
+    <div class="dos-columnas" style="grid-template-columns: 0.75fr 1.4fr; align-items: start">
+      <div>
+        <pre class="compacto"><code>tienda/
+├── go.mod
+├── main.go
+└── inventario/
+    └── inventario.go</code></pre>
+        <p class="nota" style="margin-top: 1em"><code>tienda</code> es el módulo; la carpeta <code>inventario</code> es un paquete y su archivo empieza con <code>package inventario</code>.</p>
+      </div>
+      <table class="tabla">
+        <thead><tr><th>Comando o línea</th><th>Para qué</th></tr></thead>
+        <tbody>
+          <tr data-paso="1"><td><code>go mod init tienda</code></td><td>Crea <code>go.mod</code>. Una vez, en la raíz.</td></tr>
+          <tr data-paso="2"><td><code>import "fmt"</code></td><td>Paquete de la biblioteca estándar.</td></tr>
+          <tr data-paso="3"><td><code>import "tienda/inventario"</code></td><td>Paquete propio: módulo más carpeta.</td></tr>
+          <tr data-paso="4"><td><code>go get github.com/…</code></td><td>Descarga un módulo externo y lo anota en <code>go.mod</code>.</td></tr>
+          <tr data-paso="5"><td><code>go run .</code></td><td>Compila y ejecuta el paquete <code>main</code> de la carpeta.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ BLOQUE 3 · SALAS ============ -->
+
+  <section class="diapositiva bloque" data-bloque="3">
+    <span class="numero">3</span>
+    <div class="bloque-texto">
+      <h2></h2>
+      <p class="minutos"></p>
+      <p>La consigna queda en esta diapositiva y en el chat.</p>
+    </div>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Consigna</h2>
+    <ol class="plan">
+      <li><span class="min">0–5</span><span><strong>Tus módulos.</strong> Cada uno cuenta en qué paquetes dividirá su sistema (por ejemplo: <code>catalogo</code>, <code>prestamos</code>, <code>usuarios</code>).</span></li>
+      <li><span class="min">5–20</span><span><strong>Tu paquete.</strong> Parte de <code>ejemplos/ejercicio-paquetes</code>: dos funciones exportadas (una con dos retornos) y una auxiliar no exportada. Llámalas desde <code>main</code> y ejecuta <code>go run .</code></span></li>
+      <li><span class="min">20–30</span><span><strong>Retos, si terminaste.</strong> (1) Predice y comprueba los tres de <code>ejemplos/predice</code>. (2) Agrega una función variádica. (3) Intenta llamar a tu función no exportada desde <code>main</code> y lee el error.</span></li>
+    </ol>
+    <div class="consigna-pie">
+      <p class="nota">Antes de volver, anota una duda. ¿Quieres mostrar tu paquete en la plenaria? Avísame por chat.</p>
+      <button class="temporizador" type="button" data-minutos="30" aria-label="Temporizador de la consigna"></button>
+    </div>
+  </section>
+
+  <!-- ============ BLOQUE 4 · PLENARIA ============ -->
+
+  <section class="diapositiva bloque" data-bloque="4">
+    <span class="numero">4</span>
+    <div class="bloque-texto">
+      <h2></h2>
+      <p class="minutos"></p>
+      <p>Otros tipos de funciones y, después, paquetes de voluntarios.</p>
+    </div>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Otros tipos de funciones</h2>
+    <div class="dos-columnas" style="grid-template-columns: 1.55fr 1fr">
+      <pre class="compacto" style="font-size: calc(var(--u) * 2.45)"><code><span class="linea-paso" data-paso="1">func sumarMontos(montos ...float64) float64 {
+    total := 0.0
+    for _, m := range montos { total += m }
+    return total
+}
+sumarMontos(4.5, 3, 2.5)   <span class="comentario">// 10</span></span>
+<span class="linea-paso" data-paso="2">triple := func(x int) int { return x * 3 }
+aplicar(7, triple)          <span class="comentario">// 21</span></span>
+<span class="linea-paso" data-paso="3">func generadorDeTurnos() func() int {
+    siguiente := 0
+    return func() int { siguiente++; return siguiente }
+}
+turno := generadorDeTurnos()
+turno(); turno(); turno()   <span class="comentario">// 1, 2, 3</span></span></code></pre>
+      <ul class="ideas compactas">
+        <li data-paso="1"><span><strong>Variádica:</strong> <code>...</code> acepta cualquier cantidad de argumentos del mismo tipo, también ninguno.</span></li>
+        <li data-paso="2"><span><strong>Anónima:</strong> una función sin nombre guardada en una variable y pasada como argumento, como una <em>lambda</em>.</span></li>
+        <li data-paso="3"><span><strong><em>Closure</em>:</strong> la función devuelta recuerda <code>siguiente</code> entre llamadas.</span></li>
+      </ul>
+    </div>
+    <p class="nota">Código completo: <code>semana-02/ejemplos/funciones/main.go</code>.</p>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Un closure recuerda su variable</h2>
+    <figure id="anim-closure">
+      <figcaption class="solo-lector">turno guarda una función que recuerda su propia variable siguiente: tres llamadas devuelven 1, 2 y 3. otro es una segunda función con otra variable, que devuelve 1. <span data-paso="1"></span><span data-paso="2"></span><span data-paso="3"></span><span data-paso="4"></span><span data-paso="5"></span><span data-paso="6"></span></figcaption>
+    </figure>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Revisamos tu paquete</h2>
+    <ul class="ideas">
+      <li><span>¿Compila con <code>go run .</code>? ¿El <code>import</code> usa la ruta del módulo y la carpeta?</span></li>
+      <li><span>¿Las funciones que usa <code>main</code> empiezan con mayúscula? ¿La auxiliar quedó oculta?</span></li>
+      <li><span>¿La función con dos retornos se recibe con dos variables, en el orden correcto?</span></li>
+      <li><span>¿Los paquetes coinciden con los módulos de tu Aprendizaje Autónomo 1?</span></li>
+    </ul>
+    <p class="nota">Solo participa quien se ofrece. Recuerda que esta parte se graba.</p>
+  </section>
+
+  <!-- ============ BLOQUE 5 · CIERRE ============ -->
+
+  <section class="diapositiva bloque" data-bloque="5">
+    <span class="numero">5</span>
+    <div class="bloque-texto">
+      <h2></h2>
+      <p class="minutos"></p>
+      <p>Repaso para el domingo y el tutor de la semana 3.</p>
+    </div>
+  </section>
+
+  <section class="diapositiva">
+    <h2>¿Compila o no compila?</h2>
+    <table class="tabla">
+      <thead><tr><th>Código</th><th>¿Compila?</th><th>Por qué</th></tr></thead>
+      <tbody>
+        <tr><td><code>func cerrarCaja() { }</code></td><td class="resultado" data-paso="1">sí</td><td data-paso="1">paréntesis obligatorios aunque estén vacíos</td></tr>
+        <tr><td><code>function precio(x int) int</code></td><td class="resultado" data-paso="2">no</td><td data-paso="2">en Go la palabra es <code>func</code></td></tr>
+        <tr><td><code>func iva(x float64) float64 { }</code></td><td class="resultado" data-paso="3">no</td><td data-paso="3">promete un retorno: falta <code>return</code> (<em>missing return</em>)</td></tr>
+        <tr><td><code>func medir(a, b, c int) (int, int)</code></td><td class="resultado" data-paso="4">sí</td><td data-paso="4">parámetros del mismo tipo agrupados; dos retornos</td></tr>
+        <tr><td><code>buscar(3)</code> si <code>buscar</code> pide dos <code>int</code></td><td class="resultado" data-paso="5">no</td><td data-paso="5">tantos argumentos como parámetros: no hay valores por defecto</td></tr>
+        <tr><td><code>n := contar()</code> si <code>contar</code> devuelve dos valores</td><td class="resultado" data-paso="6">no</td><td data-paso="6">hay que recibir los dos: <code>n, ok := contar()</code></td></tr>
+      </tbody>
+    </table>
+    <p class="nota" data-paso="7">Para varios retornos, los tipos van separados por comas. Sin la coma, Go entiende otra cosa: un retorno con nombre.</p>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Del módulo a tu Aprendizaje Autónomo 1</h2>
+    <ul class="ideas">
+      <li data-paso="1"><span>Tu repositorio empieza con <code>go mod init</code> y el nombre de tu sistema. Sin ese paso no puedes importar tus paquetes.</span></li>
+      <li data-paso="2"><span>Un paquete por módulo de tu diseño. Las funciones de la tabla de tu PDF son las exportadas.</span></li>
+      <li data-paso="3"><span>Si usas una biblioteca externa, se instala con <code>go get</code> y se documenta. Lo estándar, como <code>strconv</code>, solo se importa.</span></li>
+    </ul>
+    <p class="nota">Guía completa: <a href="../ver.html?f=entregas/aa1.md">Aprendizaje Autónomo 1</a>. Vence el domingo 15 de noviembre.</p>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Cómo usar el tutor</h2>
+    <ol>
+      <li>Abre el sitio del curso, <a href="https://carlosandresat.github.io/uide-poo-go-online/">carlosandresat.github.io/uide-poo-go-online</a>, y pulsa <strong>Copiar tutor</strong> en la semana 3. También puedes <a href="../ver.html?f=semana-03/tutor.md">abrirlo aquí</a>.</li>
+      <li>Pégalo completo en ChatGPT, Gemini o Claude (sirve la versión gratuita).</li>
+      <li>Conversa 20–30 minutos. Te hará preguntas y no te dará respuestas.</li>
+      <li>Al final, envía tu ticket de entrada en el <a href="https://forms.cloud.microsoft/r/ZhHFhJsKQE">formulario de tickets</a> hasta las 12:00 del lunes 9 de noviembre.</li>
+    </ol>
+    <p class="nota">Si tienes poco tiempo, escribe RÁPIDO al empezar: irá directo a las preguntas de control.</p>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Antes de irnos</h2>
+    <ul class="cierre-lista">
+      <li><span class="que">Este domingo, 8 nov</span><span>Aprendizaje Práctico de la semana 2.</span></li>
+      <li><span class="que">Domingo 15 nov</span><span>Vence el Aprendizaje Autónomo 1: diseño, repositorio que compila y video.</span></li>
+      <li><span class="que">Si ves la grabación</span><span>Crea un paquete de tu sistema con <code>ejemplos/ejercicio-paquetes</code>: dos funciones exportadas (una con dos retornos), una auxiliar oculta y un <code>main</code> que las use. Luego predice y comprueba los retos de <code>ejemplos/predice</code>.</span></li>
+      <li><span class="que">Próxima semana</span><span>Arrays, slices y maps. Antes, usa el <a href="../ver.html?f=semana-03/tutor.md">tutor de la semana 3</a>.</span></li>
+    </ul>
+  </section>
+
+</main>
+<script src="../assets/secuencia.js"></script>
+<script src="../assets/presentacion.js"></script>
+<script src="anim-llamada.js"></script>
+<script src="anim-closure.js"></script>
+</body>
+</html>
