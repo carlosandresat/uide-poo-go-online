@@ -17,6 +17,7 @@ El enunciado de la plataforma viene de versiones anteriores del curso. Donde hay
 | Elegir entre tres sistemas (libros electrónicos, *streaming* o *e-commerce*) | **El tema es libre.** Esos tres son solo ejemplos. Puede ser una biblioteca, un gimnasio, un inventario, una plataforma de cursos o lo que quieras construir. |
 | «Grupo de hasta 4 participantes» | El trabajo es **individual**. Cada quien tiene su propio repositorio. |
 | «Programación funcional» | Organiza el programa **en funciones** dentro de paquetes. Todavía sin structs (eso viene en el Aprendizaje Autónomo 2). |
+| «Módulos» | Dos palabras parecidas, dos cosas distintas. Un **módulo del sistema** es un área funcional (catálogo, usuarios, pedidos) y en Go se programa como **un paquete**. El **módulo de Go** es el proyecto completo: la carpeta con `go.mod`. Tu repositorio tiene **un solo `go.mod`** y **un paquete por cada módulo del sistema** (ver el paso 4). |
 | «Estructura de gestión del sistema» | Es el **árbol de paquetes** y una **tabla de funciones por módulo** (ver el paso 3). |
 | «Configuración del repositorio de GitHub» | Un repositorio con `go.mod`, la estructura de paquetes, un `README.md` y las funciones declaradas. **Debe compilar**, aunque las funciones aún no hagan todo. |
 
@@ -30,7 +31,22 @@ El enunciado de la plataforma viene de versiones anteriores del curso. Donde hay
    |---|---|---|---|
    | `AgregarLibro` | `titulo string, autor string, precio float64` | `error` | Registra un libro nuevo |
 
-4. **Diseña los paquetes**: qué paquete corresponde a cada módulo y qué se exporta (mayúscula inicial). Si usas paquetes de terceros, explica para qué.
+4. **Diseña los paquetes**: qué paquete corresponde a cada módulo y qué se exporta (mayúscula inicial). Si usas paquetes de terceros, explica para qué. Un ejemplo para un gimnasio:
+
+   ```
+   gimnasio/
+   ├── go.mod              ← un solo módulo de Go
+   ├── README.md
+   ├── main.go             ← package main: solo arranca el programa
+   ├── socios/socios.go    ← package socios
+   ├── membresias/membresias.go
+   └── clases/clases.go
+   ```
+
+   - Un paquete por módulo del sistema, con el mismo nombre que su carpeta, en minúsculas y sin guiones bajos.
+   - `main.go` queda corto: llama a los demás paquetes y no concentra la lógica.
+   - Evita paquetes genéricos como `utils`. Go tampoco permite que dos paquetes se importen entre sí.
+   - El árbol del PDF, las carpetas del repositorio y lo que muestras en el video deben coincidir.
 5. **Crea el repositorio**: `go mod init`, carpetas por paquete, funciones declaradas y un `README.md` que describa el proyecto. Comprueba que `go build ./...` funcione.
 6. **Graba el video** (3–5 minutos recomendados): presenta el sistema, recorre los módulos y muestra el repositorio.
 
