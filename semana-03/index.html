@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programación Orientada a Objetos (Go) · Semana 3</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Overpass+Mono:wght@400;600&family=Overpass:wght@400;600;700;800;900&display=swap">
+  <link rel="stylesheet" href="../assets/presentacion.css">
+  <script src="../assets/tema.js"></script>
+</head>
+<body data-curso="poo-go" data-formato="taller">
+<div class="barra-lectura">
+  <a href="../index.html">Volver al curso</a>
+  <button type="button" class="boton" data-alternar-tema>Modo oscuro</button>
+</div>
+<main class="escenario">
+
+  <section class="diapositiva portada">
+    <div class="portada-panel">
+      <span>Semana</span>
+      <span class="semana-numero">3</span>
+      <span>de 7</span>
+    </div>
+    <div class="portada-texto">
+      <p class="curso">Programación Orientada a Objetos (Go)</p>
+      <h1>Arrays, slices y maps</h1>
+      <p class="objetivo">Elegir la colección adecuada para cada dato de tu sistema y predecir qué pasa en memoria cuando la modificas.</p>
+      <p class="fecha">Lunes 9 de noviembre · 19:00</p>
+      <div class="recorrido-completo"></div>
+    </div>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Plan de hoy</h2>
+    <ol class="plan">
+      <li data-bloque="1">Pista para el Aprendizaje Práctico, tres ideas y una pregunta rápida.</li>
+      <li data-bloque="2">La IA escribe un registro de calificaciones; vemos qué pasa en memoria con un slice.</li>
+      <li data-bloque="3">En salas, cada uno arma las colecciones de su sistema. No se graba.</li>
+      <li data-bloque="4">Recetas con slices, cuándo usar cada colección y revisión de voluntarios.</li>
+      <li data-bloque="5">Repaso para el domingo, el Aprendizaje Autónomo 1 y el tutor de la semana 4.</li>
+    </ol>
+  </section>
+
+  <!-- ============ BLOQUE 1 · PUENTE ============ -->
+
+  <section class="diapositiva bloque" data-bloque="1">
+    <span class="numero">1</span>
+    <div class="bloque-texto">
+      <h2></h2>
+      <p class="minutos"></p>
+    </div>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Para el Aprendizaje Práctico de este domingo</h2>
+    <p class="pista">Distingue lo que tiene tamaño fijo de lo que crece; qué cuentan <code>len</code> y <code>cap</code>; qué funciones integradas (no métodos) agregan, copian y borran; qué pasa con el arreglo cuando cambias un slice; y cómo se pregunta si una clave existe.</p>
+    <p class="nota">Una pista, no la pregunta. El cuestionario vence el domingo 15 de noviembre, el mismo día que el Aprendizaje Autónomo 1.</p>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Tres ideas para llevarse</h2>
+    <ul class="ideas">
+      <li data-paso="1"><span><strong>Array</strong>: tamaño fijo y parte del tipo. <code>[3]int</code> y <code>[4]int</code> son tipos distintos. Se comparan con <code>==</code>.</span></li>
+      <li data-paso="2"><span><strong>Slice</strong>: una ventana sobre un arreglo, con longitud (<code>len</code>) y capacidad (<code>cap</code>). Crece con <code>s = append(s, x)</code>.</span></li>
+      <li data-paso="3"><span><strong>Map</strong>: pares clave-valor. <code>m[k] = v</code> guarda, <code>v, ok := m[k]</code> pregunta si existe y <code>delete(m, k)</code> borra.</span></li>
+    </ul>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Si vienes de Java o Python</h2>
+    <table class="tabla">
+      <thead><tr><th>Para</th><th>Java</th><th>Python</th><th>Go</th></tr></thead>
+      <tbody>
+        <tr><td>Lista que crece</td><td><code>ArrayList&lt;Integer&gt;</code></td><td><code>list</code></td><td><code>[]int</code> (slice)</td></tr>
+        <tr><td>Agregar al final</td><td><code>lista.add(x)</code></td><td><code>lista.append(x)</code></td><td><code>s = append(s, x)</code></td></tr>
+        <tr><td>Diccionario</td><td><code>HashMap&lt;String, Integer&gt;</code></td><td><code>dict</code></td><td><code>map[string]int</code></td></tr>
+        <tr><td>¿Existe la clave?</td><td><code>containsKey(k)</code></td><td><code>k in d</code></td><td><code>_, ok := m[k]</code></td></tr>
+        <tr><td>Borrar una clave</td><td><code>remove(k)</code></td><td><code>del d[k]</code></td><td><code>delete(m, k)</code></td></tr>
+        <tr><td>Tamaño</td><td><code>size()</code></td><td><code>len(x)</code></td><td><code>len(x)</code></td></tr>
+      </tbody>
+    </table>
+    <p class="nota">En Go no hay métodos como <code>.add()</code>, <code>.pop()</code> o <code>.remove()</code>: se usan funciones integradas (<code>append</code>, <code>copy</code>, <code>delete</code>, <code>len</code>) y el rebanado <code>s[i:j]</code>.</p>
+  </section>
+
+  <section class="diapositiva pregunta">
+    <p class="nota">Responde en el Forms del chat de la reunión</p>
+    <p class="enunciado">¿Qué imprime este programa?</p>
+    <pre><code>notas := make([]int, 2, 5)
+notas = append(notas, 7)
+fmt.Println(len(notas), cap(notas), notas)</code></pre>
+    <ol class="opciones">
+      <li>1 5 [7]</li>
+      <li>3 5 [0 0 7]</li>
+      <li>3 3 [0 0 7]</li>
+      <li>No compila</li>
+    </ol>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Sigue el slice, paso a paso</h2>
+    <table class="tabla">
+      <thead><tr><th>Línea</th><th>Qué pasa</th><th>len · cap · contenido</th></tr></thead>
+      <tbody>
+        <tr data-paso="1"><td><code>make([]int, 2, 5)</code></td><td>Crea 2 elementos con el valor cero y reserva espacio para 5</td><td class="resultado">2 · 5 · [0 0]</td></tr>
+        <tr data-paso="2"><td><code>append(notas, 7)</code></td><td>Agrega <strong>después</strong> de los existentes; cabe en la capacidad</td><td class="resultado">3 · 5 · [0 0 7]</td></tr>
+        <tr data-paso="3" class="fin"><td><code>Println</code></td><td>Imprime longitud, capacidad y contenido</td><td>3 5 [0 0 7]</td></tr>
+      </tbody>
+    </table>
+    <p data-paso="4">Respuesta: <mark>3 5 [0 0 7]</mark>. El segundo argumento de <code>make</code> es la longitud: esos elementos ya existen. El tercero es la capacidad: espacio reservado, todavía no visible.</p>
+  </section>
+
+  <!-- ============ BLOQUE 2 · CASO EN VIVO ============ -->
+
+  <section class="diapositiva bloque" data-bloque="2">
+    <span class="numero">2</span>
+    <div class="bloque-texto">
+      <h2></h2>
+      <p class="minutos"></p>
+      <p>La IA escribe un registro de calificaciones y lo leemos con la teoría. Después, vemos qué pasa en memoria con un slice.</p>
+    </div>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Le pedimos un registro a la IA</h2>
+    <div class="dos-columnas">
+      <pre class="prompt">Escribe en Go un registro de calificaciones: un map de estudiante a lista de notas, una forma de agregar notas, el promedio de un estudiante (avisando si no existe), eliminar a un estudiante y mostrar todos.</pre>
+      <div>
+        <h3>Para interpretar su respuesta</h3>
+        <ul>
+          <li data-paso="1">¿Por qué <code>append(notas[nombre], nota)</code> funciona aunque el estudiante no exista todavía?</li>
+          <li data-paso="2">¿Para qué sirve el <code>ok</code> de <code>lista, ok := notas[nombre]</code>?</li>
+          <li data-paso="3">¿Por qué el listado sale en otro orden cada vez que lo ejecutamos?</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Lo que respondió, leído con la teoría</h2>
+    <div class="dos-columnas" style="grid-template-columns: 1.25fr 1fr">
+      <pre class="compacto"><code>notas := make(map[string][]float64)
+
+<span class="clave">notas[nombre] = append(notas[nombre], nota)</span>
+
+<span class="clave">lista, ok := notas[nombre]</span>
+if !ok || len(lista) == 0 {
+    return 0, false
+}
+
+delete(notas, "Luis")
+
+<span class="clave">for nombre, lista := range notas {</span>
+    fmt.Println(nombre, lista)
+}</code></pre>
+      <div style="display: flex; flex-direction: column; gap: calc(var(--u) * 3)">
+        <ul class="ideas compactas">
+          <li data-paso="1"><span>Una clave que no existe devuelve el valor cero: aquí, un slice <code>nil</code>. Y <code>append</code> sobre <code>nil</code> crea el slice.</span></li>
+          <li data-paso="2"><span><code>ok</code> distingue «no existe» de «existe y vale cero». Sin él, un 0 sería ambiguo.</span></li>
+          <li data-paso="3"><span>El orden de <code>range</code> sobre un map no está garantizado. Si importa el orden, usa un slice.</span></li>
+        </ul>
+        <p class="nota">Código completo: <code>ejemplos/calificaciones/main.go</code>.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="diapositiva">
+    <h2>El arreglo detrás de un slice</h2>
+    <figure id="anim-slice">
+      <figcaption class="solo-lector">
+        <span data-paso="1">Línea 1: el array precios tiene cinco celdas.</span>
+        <span data-paso="2">Línea 2: oferta apunta a la celda 1, con longitud 2 y capacidad 4.</span>
+        <span data-paso="3">Línea 3: oferta[0] = 99 cambia precios[1].</span>
+        <span data-paso="4">Línea 4: el append cabe y escribe en precios[3].</span>
+        <span data-paso="5">Línea 5: el append no cabe; Go crea un arreglo de capacidad 8 y oferta deja de compartir con precios.</span>
+      </figcaption>
+    </figure>
+    <p class="nota">Un slice guarda tres cosas: dónde empieza, cuántos ve (<code>len</code>) y cuántos caben (<code>cap</code>). Mientras comparte el arreglo, cambiar uno cambia el otro. Pruébalo con <code>ejemplos/slices</code>.</p>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Maps: lo que hay que saber</h2>
+    <table class="tabla">
+      <thead><tr><th>Código</th><th>Qué hace</th></tr></thead>
+      <tbody>
+        <tr><td><code>stock := map[string]int{"tinta": 4}</code></td><td>Crea con valores iniciales (literal)</td></tr>
+        <tr><td><code>stock := make(map[string]int)</code></td><td>Crea vacío, listo para usar</td></tr>
+        <tr data-paso="1"><td><code>stock["papel"]</code> si no existe</td><td>Devuelve el valor cero (<code>0</code>), sin error</td></tr>
+        <tr data-paso="2"><td><code>v, ok := stock["papel"]</code></td><td><code>ok</code> es <code>false</code> si la clave no existe</td></tr>
+        <tr data-paso="3"><td><code>delete(stock, "tinta")</code></td><td>Borra la clave; si no existe, no hace nada</td></tr>
+        <tr data-paso="4"><td><code>for k, v := range stock</code> · <code>for k := range stock</code></td><td>Recorre claves y valores, o solo claves, en orden no garantizado</td></tr>
+        <tr data-paso="5"><td><code>var m map[string]int</code> y luego <code>m["x"] = 1</code></td><td><em>Panic</em>: un map <code>nil</code> se puede leer, pero no escribir</td></tr>
+      </tbody>
+    </table>
+    <p class="nota" data-paso="6">La clave puede ser de cualquier tipo <strong>comparable</strong> con <code>==</code>, también uno tuyo: un struct de campos comparables sirve. Un slice, un map o una función no pueden ser clave.</p>
+  </section>
+
+  <!-- ============ BLOQUE 3 · SALAS ============ -->
+
+  <section class="diapositiva bloque" data-bloque="3">
+    <span class="numero">3</span>
+    <div class="bloque-texto">
+      <h2></h2>
+      <p class="minutos"></p>
+      <p>La consigna queda en esta diapositiva y en el chat.</p>
+    </div>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Consigna</h2>
+    <ol class="plan">
+      <li><span class="min">0–5</span><span><strong>Tus datos.</strong> Cada uno dice qué colecciones necesita su sistema: ¿qué guarda en orden (slice) y qué busca por clave (map)?</span></li>
+      <li><span class="min">5–20</span><span><strong>Tus colecciones.</strong> Parte de <code>ejemplos/ejercicio-colecciones</code>: un slice y un map de tu sistema; busca con «coma ok», borra con <code>delete</code>, quita el último del slice y copia con <code>copy</code>.</span></li>
+      <li><span class="min">20–30</span><span><strong>Retos, si terminaste.</strong> (1) Predice y comprueba los tres de <code>ejemplos/predice</code>. (2) En <code>ejemplos/slices</code>, cambia la capacidad con <code>precios[1:3:3]</code> y explica qué cambia.</span></li>
+    </ol>
+    <div class="consigna-pie">
+      <p class="nota">Antes de volver, anota una duda. ¿Quieres mostrar tu trabajo en la plenaria? Avísame por chat.</p>
+      <button class="temporizador" type="button" data-minutos="30" aria-label="Temporizador de la consigna"></button>
+    </div>
+  </section>
+
+  <!-- ============ BLOQUE 4 · PLENARIA ============ -->
+
+  <section class="diapositiva bloque" data-bloque="4">
+    <span class="numero">4</span>
+    <div class="bloque-texto">
+      <h2></h2>
+      <p class="minutos"></p>
+      <p>Recetas con slices, cuándo usar cada colección y revisión de voluntarios.</p>
+    </div>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Recetas con slices</h2>
+    <table class="tabla">
+      <thead><tr><th>Para</th><th>Código</th><th>Ojo</th></tr></thead>
+      <tbody>
+        <tr data-paso="1"><td>Agregar al final</td><td><code>s = append(s, x)</code></td><td>Hay que guardar lo que devuelve</td></tr>
+        <tr data-paso="2"><td>Quitar el último</td><td><code>s = s[:len(s)-1]</code></td><td>Es un rebanado, no una función</td></tr>
+        <tr data-paso="3"><td>Quitar el de la posición <code>i</code></td><td><code>s = append(s[:i], s[i+1:]...)</code></td><td>Modifica el arreglo original</td></tr>
+        <tr data-paso="4"><td>Copiar</td><td><code>dst := make([]int, len(src))</code><br><code>copy(dst, src)</code></td><td>Primero el destino; copia lo que quepa en <code>len(dst)</code></td></tr>
+        <tr data-paso="5"><td>Slice vacío</td><td><code>make([]int, 0)</code> · <code>[]int{}</code></td><td><code>make</code> necesita la longitud</td></tr>
+      </tbody>
+    </table>
+    <p class="nota" data-paso="6"><code>b := a</code> no copia un slice: los dos ven el mismo arreglo. Con un array sí se copia todo.</p>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Quitar un elemento: qué pasa en memoria</h2>
+    <figure id="anim-borrar">
+      <figcaption class="solo-lector">
+        <span data-paso="1">Línea 1: cola tiene 11, 22, 33, 44 y 55, con longitud 5 y capacidad 5.</span>
+        <span data-paso="2">Línea 2: cola[:1] tiene capacidad 5, así que el append cabe y escribe en el mismo arreglo; cola[2:] es lo que se copia.</span>
+        <span data-paso="3">Se copian 33, 44 y 55 una celda a la izquierda; el 22 se pierde.</span>
+        <span data-paso="4">Resultado: sin es [11 33 44 55] con longitud 4; cola quedó [11 33 44 55 55].</span>
+      </figcaption>
+    </figure>
+    <p class="nota">Si todavía necesitas el slice original, copia primero con <code>copy</code> y quita en la copia.</p>
+  </section>
+
+  <section class="diapositiva">
+    <h2>¿Slice o map? Piensa en tu Aprendizaje Autónomo 2</h2>
+    <div class="dos-columnas">
+      <div>
+        <h3>Slice, cuando…</h3>
+        <ul>
+          <li>importa el orden (historial, cola de pedidos);</li>
+          <li>recorres todo casi siempre;</li>
+          <li>los elementos no tienen una clave natural.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Map, cuando…</h3>
+        <ul>
+          <li>buscas por una clave (código, correo, ISBN);</li>
+          <li>necesitas saber rápido si algo existe;</li>
+          <li>quieres evitar claves duplicadas.</li>
+        </ul>
+      </div>
+    </div>
+    <p data-paso="1">En el Aprendizaje Autónomo 2 la rúbrica pide <strong>justificar</strong> esta elección. Empieza a anotarla en tu <code>README.md</code>.</p>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Revisamos tu trabajo</h2>
+    <ul class="ideas">
+      <li><span>¿Elegiste slice o map por una razón que puedes explicar?</span></li>
+      <li><span>¿Guardas lo que devuelve <code>append</code>?</span></li>
+      <li><span>¿Usas «coma ok» antes de confiar en un valor del map?</span></li>
+      <li><span>Después de <code>copy</code>, ¿cambiar la copia deja intacto el original?</span></li>
+    </ul>
+    <p class="nota">Solo participa quien se ofrece. Recuerda que esta parte se graba.</p>
+  </section>
+
+  <!-- ============ BLOQUE 5 · CIERRE ============ -->
+
+  <section class="diapositiva bloque" data-bloque="5">
+    <span class="numero">5</span>
+    <div class="bloque-texto">
+      <h2></h2>
+      <p class="minutos"></p>
+      <p>Repaso para el domingo, el Aprendizaje Autónomo 1 y el tutor de la semana 4.</p>
+    </div>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Predice antes de mirar</h2>
+    <table class="tabla">
+      <thead><tr><th>Código</th><th>Resultado</th><th>Por qué</th></tr></thead>
+      <tbody>
+        <tr><td><code>[4]int{5}</code></td><td class="resultado" data-paso="1">[5 0 0 0]</td><td data-paso="1">lo que no indicas queda en el valor cero</td></tr>
+        <tr><td><code>[2]int{1, 2} == [2]int{2, 1}</code></td><td class="resultado" data-paso="2">false</td><td data-paso="2">los arrays se comparan elemento a elemento</td></tr>
+        <tr><td><code>len(make([]string, 3, 8))</code></td><td class="resultado" data-paso="3">3</td><td data-paso="3"><code>len</code> es la longitud; la capacidad es 8</td></tr>
+        <tr><td><code>len([]int{2, 4, 6, 8})</code></td><td class="resultado" data-paso="4">4</td><td data-paso="4">la longitud de un literal es la cantidad de elementos</td></tr>
+        <tr><td><code>len(map[string]int{"a": 1, "b": 2})</code></td><td class="resultado" data-paso="5">2</td><td data-paso="5">cuenta los pares clave-valor</td></tr>
+        <tr><td>sumar con <code>for _, v := range []int{2, 4, 6}</code></td><td class="resultado" data-paso="6">12</td><td data-paso="6"><code>_</code> descarta el índice; <code>v</code> es cada valor</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Tu duda del ticket: slices sin desperdicio</h2>
+    <table class="tabla" style="font-size: calc(var(--u) * 2.8)">
+      <thead><tr><th>Si quieres…</th><th>Haz esto</th><th>Por qué</th></tr></thead>
+      <tbody>
+        <tr data-paso="1"><td>Agregar muchos y ya sabes cuántos</td><td style="white-space: nowrap"><code>s := make([]T, 0, n)</code></td><td>Un solo arreglo. Con 1000 <code>append</code> sin reservar, Go crea 10 arreglos nuevos; reservando, ninguno.</td></tr>
+        <tr data-paso="2"><td>Una copia independiente</td><td style="white-space: nowrap"><code>c := make([]T, len(s))</code><br><code>copy(c, s)</code></td><td><code>c := s</code> solo copia el descriptor: los dos siguen viendo el mismo arreglo.</td></tr>
+        <tr data-paso="3"><td>Entregar una parte sin que su <code>append</code> pise lo tuyo</td><td style="white-space: nowrap"><code>parte := s[0:2:2]</code></td><td>El tercer índice limita la capacidad: el primer <code>append</code> ya crea un arreglo nuevo.</td></tr>
+        <tr data-paso="4"><td>Quedarte con un pedazo pequeño de algo enorme</td><td>Copia el pedazo con <code>copy</code></td><td><code>grande[:10]</code> ve 10 elementos, pero mantiene vivo todo el arreglo en memoria.</td></tr>
+      </tbody>
+    </table>
+    <p class="nota" data-paso="5">Regla de fondo: un array se copia entero al asignarlo o pasarlo a una función; un slice solo copia su descriptor (puntero, <code>len</code>, <code>cap</code>). Es barato, pero comparte. Todo esto se ejecuta en <code>ejemplos/memoria</code>.</p>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Cómo crece <code>cap</code> con mil <code>append</code></h2>
+    <figure id="anim-cap">
+      <figcaption class="solo-lector">
+        <span data-paso="1">Un slice vacío empieza con longitud 0 y capacidad 0.</span>
+        <span data-paso="2">Al agregar 1000 elementos uno por uno, la capacidad crece por saltos: 4, 8, 16, 32, 64, 128, 256, 512, 848 y 1280. Son 10 arreglos nuevos.</span>
+        <span data-paso="3">Al final la longitud es 1000 y la capacidad 1280: 280 celdas sin usar y 1868 elementos copiados en el camino.</span>
+        <span data-paso="4">Con make([]int, 0, 1000) la capacidad es 1000 desde el inicio y no se crea ningún arreglo nuevo.</span>
+      </figcaption>
+    </figure>
+  </section>
+
+  <section class="diapositiva">
+    <h2>El Aprendizaje Autónomo 1 vence este domingo</h2>
+    <ul class="ideas">
+      <li><span>PDF con objetivo, alcance, módulos y la tabla de funciones por módulo.</span></li>
+      <li><span>Repositorio con <code>go.mod</code>, tus paquetes y un <code>README.md</code>. Comprueba que <code>go build ./...</code> no da errores.</span></li>
+      <li><span>Video de 3 a 5 minutos que explique tu sistema y muestre el repositorio.</span></li>
+    </ul>
+    <p class="nota">Es individual y el tema es libre. Guía completa y rúbrica: <a href="../ver.html?f=entregas/aa1.md">Aprendizaje Autónomo 1</a>. Vence el domingo 15 de noviembre.</p>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Cómo usar el tutor</h2>
+    <ol>
+      <li>Abre el sitio del curso, <a href="https://carlosandresat.github.io/uide-poo-go-online/">carlosandresat.github.io/uide-poo-go-online</a>, y pulsa <strong>Copiar tutor</strong> en la semana 4. También puedes <a href="../ver.html?f=semana-04/tutor.md">abrirlo aquí</a>.</li>
+      <li>Pégalo completo en ChatGPT, Gemini o Claude (sirve la versión gratuita).</li>
+      <li>Conversa 20–30 minutos. Te hará preguntas y no te dará respuestas.</li>
+      <li>Al final, envía tu ticket de entrada en el <a href="https://forms.cloud.microsoft/r/ZhHFhJsKQE">formulario de tickets</a> hasta las 12:00 del lunes 16 de noviembre.</li>
+    </ol>
+    <p class="nota">Si tienes poco tiempo, escribe RÁPIDO al empezar: irá directo a las preguntas de control.</p>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Antes de irnos</h2>
+    <ul class="cierre-lista">
+      <li><span class="que">Este domingo, 15 nov</span><span>Aprendizaje Práctico de la semana 3 y Aprendizaje Autónomo 1.</span></li>
+      <li><span class="que">Si ves la grabación</span><span>Completa <code>ejemplos/ejercicio-colecciones</code> con datos de tu sistema: un slice, un map, una búsqueda con «coma ok», un <code>delete</code>, quitar el último elemento y una copia con <code>copy</code>. Luego predice y comprueba los retos de <code>ejemplos/predice</code>. Reto extra: en <code>ejemplos/memoria</code>, cambia <code>turnos[0:2:2]</code> por <code>turnos[0:2]</code> y predice qué imprime antes de ejecutarlo.</span></li>
+      <li><span class="que">Próxima semana</span><span>Structs, métodos y constructores. Explicaré el Aprendizaje Autónomo 2. Antes, usa el <a href="../ver.html?f=semana-04/tutor.md">tutor de la semana 4</a>.</span></li>
+    </ul>
+  </section>
+
+</main>
+<script src="../assets/secuencia.js"></script>
+<script src="../assets/presentacion.js"></script>
+<script src="anim-slice.js"></script>
+<script src="anim-borrar.js"></script>
+<script src="anim-cap.js"></script>
+</body>
+</html>
