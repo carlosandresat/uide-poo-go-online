@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programación Orientada a Objetos (Go) · Semana 4</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Overpass+Mono:wght@400;600&family=Overpass:wght@400;600;700;800;900&display=swap">
+  <link rel="stylesheet" href="../assets/presentacion.css">
+  <script src="../assets/tema.js"></script>
+</head>
+<body data-curso="poo-go" data-formato="taller">
+<div class="barra-lectura">
+  <a href="../index.html">Volver al curso</a>
+  <button type="button" class="boton" data-alternar-tema>Modo oscuro</button>
+</div>
+<main class="escenario">
+
+  <section class="diapositiva portada">
+    <div class="portada-panel">
+      <span>Semana</span>
+      <span class="semana-numero">4</span>
+      <span>de 7</span>
+    </div>
+    <div class="portada-texto">
+      <p class="curso">Programación Orientada a Objetos (Go)</p>
+      <h1>Objetos en Go: structs, métodos y constructores</h1>
+      <p class="objetivo">Modelar las entidades de tu sistema con structs, elegir entre receptor de valor y receptor puntero, y arrancar el Aprendizaje Autónomo 2.</p>
+      <p class="fecha">Lunes 16 de noviembre · 19:00</p>
+      <div class="recorrido-completo"></div>
+    </div>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Plan de hoy</h2>
+    <ol class="plan">
+      <li data-bloque="1">Pista para el Aprendizaje Práctico, tres ideas y una pregunta rápida.</li>
+      <li data-bloque="2">La IA modela un producto con constructor y métodos; lo leemos con la teoría.</li>
+      <li data-bloque="3">En salas, cada uno convierte la entidad principal de su sistema en un struct. No se graba.</li>
+      <li data-bloque="4">El Aprendizaje Autónomo 2 y los errores frecuentes del primero. Luego, voluntarios.</li>
+      <li data-bloque="5">Incrustación, repaso para el domingo y el tutor de la semana 5.</li>
+    </ol>
+  </section>
+
+  <!-- ============ BLOQUE 1 · PUENTE ============ -->
+
+  <section class="diapositiva bloque" data-bloque="1">
+    <span class="numero">1</span>
+    <div class="bloque-texto">
+      <h2></h2>
+      <p class="minutos"></p>
+    </div>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Para el Aprendizaje Práctico de este domingo</h2>
+    <p class="pista">Fíjate en cómo se declara un struct, en qué diferencia a un método de una función (el receptor), en qué cambia cuando el receptor es un puntero, en qué es un constructor en Go y en qué campos y métodos «se ven» a través de un struct incrustado.</p>
+    <p class="nota">Una pista, no la pregunta. El cuestionario vence el domingo 22 de noviembre.</p>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Tres ideas para llevarse</h2>
+    <ul class="ideas">
+      <li data-paso="1"><span>Un <strong>struct</strong> agrupa campos: <code>type Libro struct { titulo string; paginas int }</code>. No hay clases: los métodos se declaran aparte.</span></li>
+      <li data-paso="2"><span>Un <strong>método</strong> es una función con receptor: <code>func (l Libro) Resumen() string</code>. Con receptor puntero, <code>(l *Libro)</code>, puede modificar el original.</span></li>
+      <li data-paso="3"><span>Un <strong>constructor</strong> es una función normal, por convención <code>NewLibro(...)</code>, que devuelve el struct inicializado (casi siempre <code>*Libro</code>).</span></li>
+    </ul>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Si vienes de Java o Python</h2>
+    <table class="tabla">
+      <thead><tr><th></th><th>Java</th><th>Python</th><th>Go</th></tr></thead>
+      <tbody>
+        <tr><td>Molde de objetos</td><td><code>class Libro { }</code></td><td><code>class Libro:</code></td><td><code>type Libro struct { }</code></td></tr>
+        <tr><td>Métodos</td><td>dentro de la clase</td><td>dentro de la clase, con <code>self</code></td><td>fuera, con receptor <code>(l Libro)</code></td></tr>
+        <tr><td>Constructor</td><td><code>new Libro(...)</code></td><td><code>__init__</code></td><td>función normal <code>NewLibro(...)</code></td></tr>
+        <tr><td>Referencia al objeto</td><td><code>this</code></td><td><code>self</code></td><td>el receptor, con el nombre que elijas</td></tr>
+        <tr><td>Reutilizar</td><td><code>extends</code> (herencia)</td><td>herencia</td><td>incrustación (composición)</td></tr>
+      </tbody>
+    </table>
+    <p class="nota">Los objetos de Java siempre se pasan por referencia. En Go, un struct se copia, salvo que uses un puntero.</p>
+  </section>
+
+  <section class="diapositiva pregunta">
+    <p class="nota">Responde en el Forms del chat de la reunión</p>
+    <p class="enunciado">¿Qué imprime este programa?</p>
+    <div class="dos-columnas" style="grid-template-columns: 1.5fr 1fr; align-items: center">
+    <pre style="font-size: calc(var(--u) * 2.9)"><code>type Contador struct{ n int }
+
+func (c Contador) Sumar()      { c.n++ }
+func (c *Contador) SumarBien() { c.n++ }
+
+func main() {
+    k := Contador{}
+    k.Sumar(); k.Sumar(); k.SumarBien()
+    fmt.Println(k.n)
+}</code></pre>
+    <ol class="opciones" style="grid-template-columns: 1fr">
+      <li>0</li>
+      <li>1</li>
+      <li>3</li>
+      <li>No compila</li>
+    </ol>
+    </div>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Copia o dirección: lo que pasa en memoria</h2>
+    <table class="tabla">
+      <thead><tr><th>Línea</th><th>El método trabaja sobre…</th><th>Dentro del método</th><th><code>k.n</code> después</th></tr></thead>
+      <tbody>
+        <tr data-paso="1"><td><code>k := Contador{}</code></td><td>—</td><td>—</td><td class="resultado">0</td></tr>
+        <tr data-paso="2"><td><code>k.Sumar()</code></td><td>una <strong>copia</strong> de <code>k</code></td><td>la copia pasa a 1 y desaparece</td><td class="resultado">0</td></tr>
+        <tr data-paso="3"><td><code>k.Sumar()</code></td><td>otra copia nueva</td><td>la copia pasa a 1 y desaparece</td><td class="resultado">0</td></tr>
+        <tr data-paso="4"><td><code>k.SumarBien()</code></td><td>la <strong>dirección</strong> de <code>k</code> (Go toma <code>&amp;k</code>)</td><td>el original pasa a 1</td><td class="resultado">1</td></tr>
+      </tbody>
+    </table>
+    <p data-paso="5">Respuesta: <mark>1</mark>. Con receptor de valor, el método trabaja sobre una copia que desaparece al terminar. Con receptor puntero, modifica el original. Pruébalo con <code>ejemplos/receptores</code>.</p>
+  </section>
+
+  <!-- ============ BLOQUE 2 · CASO EN VIVO ============ -->
+
+  <section class="diapositiva bloque" data-bloque="2">
+    <span class="numero">2</span>
+    <div class="bloque-texto">
+      <h2></h2>
+      <p class="minutos"></p>
+      <p>La IA modela un producto con constructor y métodos, y lo leemos con la teoría.</p>
+    </div>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Le pedimos un modelo a la IA</h2>
+    <div class="dos-columnas">
+      <pre class="prompt">Modela en Go un producto de inventario con nombre, precio y stock. Agrega un constructor, un método que calcule el valor del inventario, otro que aplique un descuento y otro que reponga unidades. Escribe un main que lo use.</pre>
+      <div>
+        <h3>Para interpretar su respuesta</h3>
+        <ul>
+          <li data-paso="1">¿Por qué el constructor se llama <code>NewProducto</code> y devuelve <code>*Producto</code>?</li>
+          <li data-paso="2">¿Por qué <code>ValorInventario</code> usa receptor de valor y <code>AplicarDescuento</code> receptor puntero?</li>
+          <li data-paso="3">Si <code>teclado</code> es un puntero, ¿por qué se escribe <code>teclado.Nombre</code> y no <code>(*teclado).Nombre</code>?</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Lo que respondió, leído con la teoría</h2>
+    <div class="dos-columnas" style="grid-template-columns: 1.7fr 1fr">
+      <pre class="compacto" style="font-size: calc(var(--u) * 2.45)"><code>type Producto struct {
+    Nombre string
+    Precio float64
+    Stock  int
+}
+
+<span class="clave">func NewProducto(nombre string, precio float64) *Producto {</span>
+    return &amp;Producto{Nombre: nombre, Precio: precio}
+}
+
+<span class="clave">func (p Producto) ValorInventario() float64 {</span>
+    return p.Precio * float64(p.Stock)
+}
+
+<span class="clave">func (p *Producto) AplicarDescuento(pct float64) {</span>
+    p.Precio = p.Precio * (1 - pct/100)
+}</code></pre>
+      <div style="display: flex; flex-direction: column; gap: calc(var(--u) * 2.5)">
+        <ul class="ideas compactas">
+          <li data-paso="1"><span>Un constructor es una función normal. <code>NewX</code> es convención, y devolver un puntero evita copias.</span></li>
+          <li data-paso="2"><span>Leer: receptor de valor basta. Modificar: receptor puntero, o el cambio se pierde en una copia.</span></li>
+          <li data-paso="3"><span>Con un puntero a struct, el punto desreferencia solo: <code>teclado.Nombre</code>.</span></li>
+        </ul>
+        <p class="nota">Código completo: <code>ejemplos/producto/main.go</code>.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="diapositiva">
+    <h2>¿Valor o puntero? Una regla práctica</h2>
+    <table class="tabla">
+      <thead><tr><th>Situación</th><th>Receptor</th><th>Ejemplo</th></tr></thead>
+      <tbody>
+        <tr data-paso="1"><td>El método solo lee</td><td>de valor</td><td><code>func (p Producto) ValorInventario() float64</code></td></tr>
+        <tr data-paso="2"><td>El método modifica un campo</td><td>puntero</td><td><code>func (p *Producto) Reponer(u int)</code></td></tr>
+        <tr data-paso="3"><td>El struct es grande</td><td>puntero</td><td>evita copiarlo en cada llamada</td></tr>
+        <tr data-paso="4"><td>Ya hay un método con puntero</td><td>puntero en todos</td><td>por coherencia</td></tr>
+      </tbody>
+    </table>
+    <p class="nota" data-paso="5">Llamar es igual en ambos casos: <code>mouse.Reponer(3)</code>. Si <code>mouse</code> es una variable, Go toma <code>&amp;mouse</code> solo. Las dos formas compilan; lo que cambia es si el original se modifica.</p>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Receptores en memoria</h2>
+    <figure id="anim-receptor">
+      <figcaption class="solo-lector">Con receptor de valor, el método recibe una copia de la cuenta y el cambio se pierde. Con receptor puntero, recibe la dirección y modifica el original. <span data-paso="1"></span><span data-paso="2"></span><span data-paso="3"></span><span data-paso="4"></span><span data-paso="5"></span><span data-paso="6"></span><span data-paso="7"></span></figcaption>
+    </figure>
+    <p class="nota">Salida real de <code>ejemplos/receptores</code>: dentro de <code>DepositarCopia</code>, 150; después, 100. Dentro de <code>Depositar</code>, 150; después, 150.</p>
+  </section>
+
+  <!-- ============ BLOQUE 3 · SALAS ============ -->
+
+  <section class="diapositiva bloque" data-bloque="3">
+    <span class="numero">3</span>
+    <div class="bloque-texto">
+      <h2></h2>
+      <p class="minutos"></p>
+      <p>La consigna queda en esta diapositiva y en el chat.</p>
+    </div>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Consigna</h2>
+    <ol class="plan">
+      <li><span class="min">0–5</span><span><strong>Tus entidades.</strong> Cada uno nombra las 2–3 entidades de su sistema (por ejemplo: <code>Libro</code>, <code>Socio</code>, <code>Prestamo</code>) y sus campos.</span></li>
+      <li><span class="min">5–20</span><span><strong>Tu struct.</strong> Parte de <code>ejemplos/ejercicio-structs</code>: la entidad principal con constructor <code>NewX</code>, un método que lee (receptor de valor) y otro que modifica (receptor puntero).</span></li>
+      <li><span class="min">20–30</span><span><strong>Retos, si terminaste.</strong> (1) Predice y comprueba los tres de <code>ejemplos/predice</code>. (2) Cambia tu método que modifica a receptor de valor y explica qué pasa. (3) Agrega una segunda entidad que incruste a otra.</span></li>
+    </ol>
+    <div class="consigna-pie">
+      <p class="nota">Antes de volver, anota una duda. ¿Quieres mostrar tu struct en la plenaria? Avísame por chat.</p>
+      <button class="temporizador" type="button" data-minutos="30" aria-label="Temporizador de la consigna"></button>
+    </div>
+  </section>
+
+  <!-- ============ BLOQUE 4 · PLENARIA ============ -->
+
+  <section class="diapositiva bloque" data-bloque="4">
+    <span class="numero">4</span>
+    <div class="bloque-texto">
+      <h2></h2>
+      <p class="minutos"></p>
+      <p>Primero, el Aprendizaje Autónomo 2 y los errores frecuentes del primero. Después, structs de voluntarios.</p>
+    </div>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Aprendizaje Autónomo 2 · Desarrollo del sistema</h2>
+    <div class="dos-columnas">
+      <div>
+        <h3>Qué haces</h3>
+        <ul>
+          <li data-paso="1">Programas el sistema del primer trabajo, <strong>en el mismo repositorio</strong>.</li>
+          <li data-paso="2">Entidades como structs con constructor y métodos; slices y maps donde corresponda.</li>
+          <li data-paso="3">Encapsulación, manejo de errores y al menos una interfaz con dos implementaciones.</li>
+          <li data-paso="4">Comentarios en las partes complejas y tus decisiones en el <code>README.md</code>.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Qué entregas</h3>
+        <ul>
+          <li>El código en tu repositorio: compila y corre.</li>
+          <li>El <code>README.md</code> con las decisiones de diseño.</li>
+          <li>Un video (o dos) con la explicación y la demostración.</li>
+        </ul>
+        <p class="nota">Vence el <strong>domingo 6 de diciembre</strong>. Es individual.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Aclaraciones al enunciado</h2>
+    <table class="tabla">
+      <thead><tr><th>La plataforma dice</th><th>Qué hacer</th></tr></thead>
+      <tbody>
+        <tr><td>«El grupo…», «repositorio del grupo»</td><td>Individual, en tu repositorio del primer trabajo</td></tr>
+        <tr><td>«Clases»</td><td>Structs con métodos: Go no tiene clases</td></tr>
+        <tr><td>«Avance significativo»</td><td>Que funcione la mayoría de las funcionalidades que diseñaste</td></tr>
+        <tr><td>«Fuentes», «expertos», «posición»</td><td>Tus structs, tus decisiones de diseño y tu avance (ver la rúbrica de la guía)</td></tr>
+        <tr><td>Dos videos</td><td>Puede ser uno solo con dos partes</td></tr>
+      </tbody>
+    </table>
+    <p class="nota">Las interfaces se ven en la semana 6, la misma semana en que vence: deja previsto desde ya dónde irá la tuya. <a href="../ver.html?f=entregas/aa2.md">Guía completa y rúbrica</a>.</p>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Lo que más se repitió en el Aprendizaje Autónomo 1</h2>
+    <ul class="ideas">
+      <li data-paso="1"><span><strong>Todo dentro de <code>main</code>.</strong> Un paquete por módulo hace que el sistema crezca sin desordenarse.</span></li>
+      <li data-paso="2"><span><strong>Funciones que hacen de todo.</strong> Una función, una responsabilidad: así se convierten fácil en métodos.</span></li>
+      <li data-paso="3"><span><strong>Repositorio que no compila.</strong> Antes de entregar: <code>go build ./...</code> y <code>go vet ./...</code>.</span></li>
+      <li data-paso="4"><span><strong>PDF y repositorio que no coinciden.</strong> La tabla de funciones debe describir lo que hay en el código.</span></li>
+    </ul>
+    <p class="nota">Retroalimentación general, sin nombres. Todo esto se puede corregir en el Aprendizaje Autónomo 2.</p>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Revisamos tu struct</h2>
+    <ul class="ideas">
+      <li><span>¿El constructor se llama <code>NewX</code> y deja el struct listo para usar?</span></li>
+      <li><span>¿Los métodos que modifican usan receptor puntero?</span></li>
+      <li><span>¿Puedes explicar por qué cada método tiene el receptor que tiene?</span></li>
+      <li><span>¿Las funciones sueltas de tu primer trabajo ya son métodos?</span></li>
+    </ul>
+    <p class="nota">Solo participa quien se ofrece. Recuerda que esta parte se graba.</p>
+  </section>
+
+  <!-- ============ BLOQUE 5 · CIERRE ============ -->
+
+  <section class="diapositiva bloque" data-bloque="5">
+    <span class="numero">5</span>
+    <div class="bloque-texto">
+      <h2></h2>
+      <p class="minutos"></p>
+      <p>Incrustación, repaso para el domingo y el tutor de la semana 5.</p>
+    </div>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Incrustación: composición, no herencia</h2>
+    <div class="dos-columnas" style="grid-template-columns: 1.6fr 1fr">
+      <pre class="compacto"><code>type Vehiculo struct {
+    placa, modelo string
+}
+func (v Vehiculo) Describir() string { … }
+
+<span class="clave">type Taxi struct {
+    Vehiculo  <span class="comentario">// incrustado: sin nombre</span>
+    cooperativa string
+}</span>
+
+func (t *Taxi) Ficha() {
+    fmt.Println("Taxi", t.placa, "de", t.cooperativa)
+}</code></pre>
+      <ul class="ideas compactas">
+        <li data-paso="1"><span>Los campos y métodos de <code>Vehiculo</code> se <strong>promueven</strong>: <code>t.placa</code> y <code>t.Describir()</code> funcionan.</span></li>
+        <li data-paso="2"><span>Un método de <code>Taxi</code>, aunque tenga receptor puntero, puede usar <code>t.placa</code>. Compila y funciona.</span></li>
+        <li data-paso="3"><span>No es herencia: un <code>Taxi</code> no se puede usar donde se espera un <code>Vehiculo</code>. Se dice que lo «hereda» de forma coloquial.</span></li>
+      </ul>
+    </div>
+    <p class="nota">Código completo: <code>ejemplos/incrustacion/main.go</code>.</p>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Predice antes de mirar</h2>
+    <table class="tabla">
+      <thead><tr><th>Código</th><th>Resultado</th><th>Por qué</th></tr></thead>
+      <tbody>
+        <tr><td><code>type Sala struct { nombre string; aforo int }</code></td><td class="resultado" data-paso="1">compila</td><td data-paso="1"><code>;</code> separa campos en una línea</td></tr>
+        <tr><td><code>func ajustar(s *Sala) { s.aforo = 50 }</code> y <code>ajustar(&amp;sala)</code></td><td class="resultado" data-paso="2">aforo = 50</td><td data-paso="2">el puntero permite modificar el original</td></tr>
+        <tr><td><code>ps := &amp;Sala{nombre: "B"}</code> y <code>ps.nombre</code></td><td class="resultado" data-paso="3">B</td><td data-paso="3">el punto desreferencia solo</td></tr>
+        <tr><td><code>t.Describir()</code>, método de <code>Vehiculo</code></td><td class="resultado" data-paso="4">funciona</td><td data-paso="4">método promovido por la incrustación</td></tr>
+        <tr><td>Métodos sobre <code>type Celsius float64</code></td><td class="resultado" data-paso="5">permitido</td><td data-paso="5">cualquier tipo definido en tu paquete puede tener métodos</td></tr>
+        <tr><td>Un método llamado <code>constructor</code> que Go invoque solo</td><td class="resultado" data-paso="6">no existe</td><td data-paso="6">el constructor es una función que tú llamas</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Cómo usar el tutor</h2>
+    <ol>
+      <li>Abre el sitio del curso, <a href="https://carlosandresat.github.io/uide-poo-go-online/">carlosandresat.github.io/uide-poo-go-online</a>, y pulsa <strong>Copiar tutor</strong> en la semana 5. También puedes <a href="../ver.html?f=semana-05/tutor.md">abrirlo aquí</a>.</li>
+      <li>Pégalo completo en ChatGPT, Gemini o Claude (sirve la versión gratuita).</li>
+      <li>Conversa 20–30 minutos. Te hará preguntas y no te dará respuestas.</li>
+      <li>Al final, envía tu ticket de entrada en el <a href="https://forms.cloud.microsoft/r/ZhHFhJsKQE">formulario de tickets</a> hasta las 12:00 del lunes 23 de noviembre.</li>
+    </ol>
+    <p class="nota">Si tienes poco tiempo, escribe RÁPIDO al empezar: irá directo a las preguntas de control.</p>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Antes de irnos</h2>
+    <ul class="cierre-lista">
+      <li><span class="que">Este domingo, 22 nov</span><span>Aprendizaje Práctico de la semana 4.</span></li>
+      <li><span class="que">Domingo 6 dic</span><span>Aprendizaje Autónomo 2. Empieza ya: convierte tus entidades en structs.</span></li>
+      <li><span class="que">Si ves la grabación</span><span>Completa <code>ejemplos/ejercicio-structs</code> con tu entidad principal: constructor <code>NewX</code>, un método que lee y otro que modifica. Cambia el receptor puntero por uno de valor y explica qué pasa. Luego, los retos de <code>ejemplos/predice</code>.</span></li>
+      <li><span class="que">Próxima semana</span><span>Encapsulación y manejo de errores. Explicaré la Evaluación en Contacto con el Docente. Antes, usa el <a href="../ver.html?f=semana-05/tutor.md">tutor de la semana 5</a>.</span></li>
+    </ul>
+  </section>
+
+</main>
+<script src="../assets/secuencia.js"></script>
+<script src="../assets/presentacion.js"></script>
+<script src="anim-receptor.js"></script>
+</body>
+</html>
