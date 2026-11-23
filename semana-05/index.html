@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programación Orientada a Objetos (Go) · Semana 5</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Overpass+Mono:wght@400;600&family=Overpass:wght@400;600;700;800;900&display=swap">
+  <link rel="stylesheet" href="../assets/presentacion.css">
+  <script src="../assets/tema.js"></script>
+</head>
+<body data-curso="poo-go" data-formato="taller">
+<div class="barra-lectura">
+  <a href="../index.html">Volver al curso</a>
+  <button type="button" class="boton" data-alternar-tema>Modo oscuro</button>
+</div>
+<main class="escenario">
+
+  <section class="diapositiva portada">
+    <div class="portada-panel">
+      <span>Semana</span>
+      <span class="semana-numero">5</span>
+      <span>de 7</span>
+    </div>
+    <div class="portada-texto">
+      <p class="curso">Programación Orientada a Objetos (Go)</p>
+      <h1>Encapsulación y manejo de errores</h1>
+      <p class="objetivo">Proteger los datos de tus structs con getters y setters al estilo Go, y devolver y manejar errores en lugar de dejar que el programa falle.</p>
+      <p class="fecha">Lunes 23 de noviembre · 19:00</p>
+      <div class="recorrido-completo"></div>
+    </div>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Plan de hoy</h2>
+    <ol class="plan">
+      <li data-bloque="1">Pista para el Aprendizaje Práctico, tres ideas y una pregunta rápida.</li>
+      <li data-bloque="2">La IA encapsula una cuenta bancaria con errores; lo leemos con la teoría.</li>
+      <li data-bloque="3">En salas, cada uno encapsula la entidad principal de su sistema. No se graba.</li>
+      <li data-bloque="4">La Evaluación en Contacto con el Docente, explicada. Luego, voluntarios.</li>
+      <li data-bloque="5">Repaso para el domingo, el Aprendizaje Autónomo 2 y el tutor de la semana 6.</li>
+    </ol>
+  </section>
+
+  <!-- ============ BLOQUE 1 · PUENTE ============ -->
+
+  <section class="diapositiva bloque" data-bloque="1">
+    <span class="numero">1</span>
+    <div class="bloque-texto">
+      <h2></h2>
+      <p class="minutos"></p>
+    </div>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Para el Aprendizaje Práctico de este domingo</h2>
+    <p class="pista">Fíjate en qué hace que un campo sea visible o no fuera de su paquete; en qué receptor necesita un setter y cuál basta para un getter; en cómo se llaman; en las dos funciones para crear errores y en qué se diferencian; y en cómo se devuelve y se revisa un error.</p>
+    <p class="nota">Una pista, no la pregunta. El cuestionario vence el domingo 29 de noviembre.</p>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Tres ideas para llevarse</h2>
+    <ul class="ideas">
+      <li data-paso="1"><span><strong>Encapsular</strong> es ocultar los datos y exponer métodos. En Go, un campo en minúscula solo se ve dentro de su paquete.</span></li>
+      <li data-paso="2"><span><strong>Getter</strong> lee (receptor de valor) y <strong>setter</strong> modifica y valida (receptor puntero). Así se controla el acceso desde fuera del paquete.</span></li>
+      <li data-paso="3"><span><strong>Errores</strong>: la función devuelve <code>(valor, error)</code> y quien la llama revisa <code>if err != nil</code>. No hay <code>try</code> ni <code>catch</code>.</span></li>
+    </ul>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Si vienes de Java o Python</h2>
+    <table class="tabla">
+      <thead><tr><th></th><th>Java</th><th>Python</th><th>Go</th></tr></thead>
+      <tbody>
+        <tr><td>Campo privado</td><td><code>private double saldo;</code></td><td>convención <code>_saldo</code></td><td><code>saldo float64</code> (minúscula)</td></tr>
+        <tr><td>Getter</td><td><code>getSaldo()</code></td><td><code>@property</code></td><td><code>Saldo()</code></td></tr>
+        <tr><td>Setter</td><td><code>setSaldo(x)</code></td><td><code>@saldo.setter</code></td><td><code>SetSaldo(x) error</code></td></tr>
+        <tr><td>Señalar un error</td><td><code>throw new Exception()</code></td><td><code>raise ValueError()</code></td><td><code>return nil, errors.New("…")</code></td></tr>
+        <tr><td>Atraparlo</td><td><code>try { } catch { }</code></td><td><code>try: … except:</code></td><td><code>if err != nil { }</code></td></tr>
+      </tbody>
+    </table>
+    <p class="nota">La privacidad en Go es por paquete, no por struct: dentro del mismo paquete todo se ve. Y verás mucho código con <code>GetSaldo()</code>, sobre todo de quien viene de Java; compila igual, pero la guía oficial de Go recomienda <code>Saldo()</code>.</p>
+  </section>
+
+  <section class="diapositiva pregunta">
+    <p class="nota">Responde en el Forms del chat de la reunión</p>
+    <p class="enunciado">¿Qué imprime este programa?</p>
+    <div class="dos-columnas" style="grid-template-columns: 2fr 1fr; align-items: center">
+    <pre style="font-size: calc(var(--u) * 2.6)"><code>func retirar(saldo, monto float64) (float64, error) {
+    if monto &gt; saldo {
+        return saldo, fmt.Errorf("faltan %.2f", monto-saldo)
+    }
+    return saldo - monto, nil
+}
+<span class="comentario">// en main:</span>
+s, err := retirar(30, 45)
+if err != nil { fmt.Println("Error:", err) }
+fmt.Println(s)</code></pre>
+    <ol class="opciones" style="grid-template-columns: 1fr">
+      <li>Error: faltan 15.00 y luego 30</li>
+      <li>-15</li>
+      <li>Error: faltan 15.00 y luego -15</li>
+      <li>No compila</li>
+    </ol>
+    </div>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Sigue el error, paso a paso</h2>
+    <table class="tabla">
+      <thead><tr><th>Paso</th><th>Qué pasa</th><th>Valores</th></tr></thead>
+      <tbody>
+        <tr data-paso="1"><td>1</td><td><code>45 &gt; 30</code>: entra al <code>if</code></td><td class="resultado">monto &gt; saldo</td></tr>
+        <tr data-paso="2"><td>2</td><td>Devuelve el saldo sin cambios y un error con datos (<code>%.2f</code>)</td><td class="resultado">30 · "faltan 15.00"</td></tr>
+        <tr data-paso="3"><td>3</td><td>En <code>main</code>, <code>err</code> no es <code>nil</code>: imprime el mensaje</td><td class="resultado">Error: faltan 15.00</td></tr>
+        <tr data-paso="4" class="fin"><td>4</td><td>Sigue la ejecución: imprime <code>s</code></td><td>30</td></tr>
+      </tbody>
+    </table>
+    <p data-paso="5">Respuesta: <mark>la A</mark>. Un error en Go es un valor más: no detiene el programa. Lo que pase después depende de cómo lo manejes; aquí, el saldo nunca se restó.</p>
+  </section>
+
+  <!-- ============ BLOQUE 2 · CASO EN VIVO ============ -->
+
+  <section class="diapositiva bloque" data-bloque="2">
+    <span class="numero">2</span>
+    <div class="bloque-texto">
+      <h2></h2>
+      <p class="minutos"></p>
+      <p>La IA encapsula una cuenta bancaria con errores y lo leemos con la teoría.</p>
+    </div>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Le pedimos una cuenta encapsulada a la IA</h2>
+    <div class="dos-columnas">
+      <pre class="prompt">Escribe en Go un paquete cuenta con un struct Cuenta (titular y saldo) que no se pueda modificar desde fuera del paquete. Agrega un constructor que valide, getters, un setter para el titular y un método para retirar que devuelva un error si no alcanza el saldo. Escribe un main que maneje los errores.</pre>
+      <div>
+        <h3>Para interpretar su respuesta</h3>
+        <ul>
+          <li data-paso="1">¿Qué impide escribir <code>c.saldo = 1000000</code> desde <code>main</code>?</li>
+          <li data-paso="2">¿Por qué el getter se llama <code>Saldo()</code> y el setter <code>SetTitular()</code>, con receptor puntero?</li>
+          <li data-paso="3">¿Qué diferencia hay entre <code>errors.New</code> y <code>fmt.Errorf</code> en su código?</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Lo que respondió, leído con la teoría</h2>
+    <div class="dos-columnas" style="grid-template-columns: 1.55fr 1fr">
+      <pre class="compacto" style="font-size: calc(var(--u) * 2.4)"><code><span class="clave">type Cuenta struct { titular string; saldo float64 }</span>
+
+func (c Cuenta) Saldo() float64 { return c.saldo }
+
+<span class="clave">func (c *Cuenta) SetTitular(nuevo string) error {</span>
+    if nuevo == "" { return errors.New("titular vacío") }
+    c.titular = nuevo
+    return nil
+}
+
+func (c *Cuenta) Retirar(monto float64) error {
+    if monto &gt; c.saldo {
+<span class="clave">        return fmt.Errorf("retiro de %.2f: %w",
+            monto, ErrSaldoInsuficiente)</span>
+    }
+    c.saldo -= monto; return nil
+}</code></pre>
+      <div style="display: flex; flex-direction: column; gap: calc(var(--u) * 2.5)">
+        <ul class="ideas compactas">
+          <li data-paso="1"><span>Campos en minúscula: desde <code>main</code> (otro paquete) no existen. Solo se llega a ellos por los métodos.</span></li>
+          <li data-paso="2"><span>El setter modifica, así que necesita puntero, y valida antes de cambiar. El getter solo lee.</span></li>
+          <li data-paso="3"><span><code>errors.New</code>: mensaje fijo. <code>fmt.Errorf</code>: mensaje con datos, y <code>%w</code> envuelve otro error.</span></li>
+        </ul>
+        <p class="nota">Código completo: <code>ejemplos/cuentas</code> (<code>go run .</code>).</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Devolver un error y manejarlo</h2>
+    <div class="dos-columnas" style="grid-template-columns: 1.3fr 1fr">
+      <div>
+        <h3>Quien puede fallar, devuelve</h3>
+        <pre class="compacto" style="font-size: calc(var(--u) * 2.4)"><code>func NewCuenta(t string, i float64) (*Cuenta, error) {
+    if t == "" {
+<span class="clave">        return nil, errors.New("titular vacío")</span>
+    }
+    return &amp;Cuenta{titular: t, saldo: i}, nil
+}</code></pre>
+        <p class="nota" style="margin-top: 1em">Se devuelven <strong>todos</strong> los valores: <code>nil</code> para el puntero y el error. Si todo va bien, el error es <code>nil</code>.</p>
+      </div>
+      <div>
+        <h3>Quien llama, revisa</h3>
+        <pre class="compacto" style="font-size: calc(var(--u) * 2.4)"><code>c, err := NewCuenta("", 10)
+<span class="clave">if err != nil {</span>
+    fmt.Println("Error:", err)
+    return
+}
+fmt.Println(c.Saldo())</code></pre>
+        <p class="nota" style="margin-top: 1em"><code>err</code> es una variable de tipo <code>error</code>: se compara con <code>nil</code>. <code>if err { }</code> no compila.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Cómo viaja un error</h2>
+    <figure id="anim-errores">
+      <figcaption class="solo-lector">main llama a NewReserva, que llama a SetPersonas. SetPersonas crea un error con fmt.Errorf y %w, que envuelve a ErrSinCupo. Cada función que lo recibe lo devuelve hacia arriba hasta main, que lo imprime. errors.Is encuentra ErrSinCupo dentro del envoltorio. <span data-paso="1"></span><span data-paso="2"></span><span data-paso="3"></span><span data-paso="4"></span><span data-paso="5"></span><span data-paso="6"></span></figcaption>
+    </figure>
+    <p class="nota">Código: <code>ejemplos/propagacion/main.go</code>. Cada función decide: manejar el error o devolverlo. Nadie lo ignora.</p>
+  </section>
+
+  <!-- ============ BLOQUE 3 · SALAS ============ -->
+
+  <section class="diapositiva bloque" data-bloque="3">
+    <span class="numero">3</span>
+    <div class="bloque-texto">
+      <h2></h2>
+      <p class="minutos"></p>
+      <p>La consigna queda en esta diapositiva y en el chat.</p>
+    </div>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Consigna</h2>
+    <ol class="plan">
+      <li><span class="min">0–5</span><span><strong>Tus reglas.</strong> Cada uno dice qué datos de su entidad principal no deberían cambiar sin control y qué validación necesita cada uno.</span></li>
+      <li><span class="min">5–20</span><span><strong>Tu entidad encapsulada.</strong> Parte de <code>ejemplos/ejercicio-encapsulacion</code>: campos en minúscula, constructor que devuelve <code>(*X, error)</code>, getters y un setter que valida.</span></li>
+      <li><span class="min">20–30</span><span><strong>Retos, si terminaste.</strong> (1) Predice y comprueba los tres de <code>ejemplos/predice</code>. (2) Crea un error con nombre y compáralo con <code>errors.Is</code>. (3) Intenta escribir un campo privado desde <code>main</code> y lee el error.</span></li>
+    </ol>
+    <div class="consigna-pie">
+      <p class="nota">Antes de volver, anota una duda. ¿Quieres mostrar tu entidad en la plenaria? Avísame por chat.</p>
+      <button class="temporizador" type="button" data-minutos="30" aria-label="Temporizador de la consigna"></button>
+    </div>
+  </section>
+
+  <!-- ============ BLOQUE 4 · PLENARIA ============ -->
+
+  <section class="diapositiva bloque" data-bloque="4">
+    <span class="numero">4</span>
+    <div class="bloque-texto">
+      <h2></h2>
+      <p class="minutos"></p>
+      <p>Primero, la Evaluación en Contacto con el Docente. Después, entidades de voluntarios.</p>
+    </div>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Evaluación en Contacto con el Docente · Servicios web</h2>
+    <div class="dos-columnas">
+      <div>
+        <h3>Qué haces</h3>
+        <ul>
+          <li data-paso="1">Tu mismo sistema, ahora como <strong>aplicación web</strong>.</li>
+          <li data-paso="2"><strong>Al menos 8 servicios</strong> que reciben y responden JSON.</li>
+          <li data-paso="3">La POO que ya tienes: structs, encapsulación, errores e interfaces.</li>
+          <li data-paso="4"><strong>Concurrencia</strong> bien manejada y <strong>pruebas</strong> documentadas.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Qué entregas</h3>
+        <ul>
+          <li>Repositorio con <code>README.md</code> (tus datos, objetivo, fecha, funcionalidades).</li>
+          <li>Informe: descripción, justificación, diagrama de clases, pruebas y resultados.</li>
+          <li>Video con presentación, demostración y concurrencia.</li>
+        </ul>
+        <p class="nota">Vence el <strong>domingo 13 de diciembre</strong>. Es individual. Vale 34 puntos.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Lo que dice la plataforma y qué hacer</h2>
+    <table class="tabla">
+      <thead><tr><th>La plataforma dice</th><th>Qué hacer</th></tr></thead>
+      <tbody>
+        <tr><td>Título «El impacto de las nuevas tecnologías… visualización del futuro»</td><td>Es de otro curso. El trabajo es <strong>Generación de Servicios Web del Sistema</strong></td></tr>
+        <tr><td>«Crea una visualización del futuro…»</td><td>No aplica. Ignóralo</td></tr>
+        <tr><td>Cronograma de 8 semanas</td><td>No es un entregable</td></tr>
+        <tr><td>«Grupo», «datos del grupo»</td><td>Individual: tus datos en el <code>README.md</code></td></tr>
+        <tr><td>«Elegir el tipo de aplicación web»</td><td>Es tu mismo sistema: justifica qué expones como servicios</td></tr>
+        <tr><td>«Presentación en la última clase»</td><td>No se presenta en la sesión: va <strong>dentro del video</strong></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Cómo se califica y por dónde empezar</h2>
+    <table class="tabla">
+      <thead><tr><th>Criterio</th><th>Puntos</th><th>Qué se mira</th></tr></thead>
+      <tbody>
+        <tr><td>Resultados</td><td class="resultado">8</td><td>Todo funcionando en el video, con solicitudes simultáneas</td></tr>
+        <tr><td>Pruebas</td><td class="resultado">8</td><td>Unitarias, de servicios y de aceptación, con errores y correcciones</td></tr>
+        <tr><td>Tema y análisis</td><td class="resultado">7 + 7</td><td>Alcance, 8 servicios con JSON, diagrama de clases</td></tr>
+        <tr><td>Decisiones y conclusión</td><td class="resultado">2 + 2</td><td>Por qué lo hiciste así y qué aprendiste</td></tr>
+      </tbody>
+    </table>
+    <p data-paso="1"><strong>Esta semana:</strong> lista tus 8 servicios a partir de las funcionalidades del primer trabajo y termina el Aprendizaje Autónomo 2. La semana 6 hacemos el arranque técnico: tu primer servicio web.</p>
+    <p class="nota"><a href="../ver.html?f=entregas/ecd.md">Guía completa y rúbrica</a></p>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Revisamos tu entidad</h2>
+    <ul class="ideas">
+      <li><span>¿Los campos que importan están en minúscula?</span></li>
+      <li><span>¿El constructor y los setters validan y devuelven <code>error</code>?</span></li>
+      <li><span>¿Quien llama revisa cada <code>err</code>, o alguno se ignora con <code>_</code>?</span></li>
+      <li><span>¿Los getters se llaman como el campo, sin <code>Get</code>?</span></li>
+    </ul>
+    <p class="nota">Solo participa quien se ofrece. Recuerda que esta parte se graba.</p>
+  </section>
+
+  <!-- ============ BLOQUE 5 · CIERRE ============ -->
+
+  <section class="diapositiva bloque" data-bloque="5">
+    <span class="numero">5</span>
+    <div class="bloque-texto">
+      <h2></h2>
+      <p class="minutos"></p>
+      <p>Repaso para el domingo, el Aprendizaje Autónomo 2 y el tutor de la semana 6.</p>
+    </div>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Errores propios y errores que no son errores</h2>
+    <table class="tabla">
+      <thead><tr><th>Código</th><th>Qué es</th></tr></thead>
+      <tbody>
+        <tr data-paso="1"><td><code>type ErrorDeStock string</code><br><code>func (e ErrorDeStock) Error() string { … }</code></td><td>Un error propio: cualquier tipo con el método <code>Error() string</code> implementa la interfaz <code>error</code></td></tr>
+        <tr data-paso="2"><td><code>var ErrNoHay = errors.New("no hay stock")</code></td><td>Un error con nombre, para comparar con <code>errors.Is</code></td></tr>
+        <tr data-paso="3"><td><code>error</code></td><td>Un <strong>tipo</strong> predeclarado (una interfaz), no una palabra clave</td></tr>
+        <tr data-paso="4"><td><code>panic(err)</code></td><td>Detiene el programa: solo para fallas imposibles de manejar, no para validar datos</td></tr>
+        <tr data-paso="5"><td><code>return err</code> en una función de dos retornos</td><td>No compila: hay que devolver todos los valores, <code>return nil, err</code></td></tr>
+      </tbody>
+    </table>
+    <p class="nota" data-paso="6">Si una función que lee algo falla, lo habitual es <strong>devolver</strong> el error para que decida quien llama. Imprimirlo y seguir hace que el error se pierda.</p>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Del aula al Aprendizaje Autónomo 2</h2>
+    <ul class="ideas">
+      <li data-paso="1"><span>La rúbrica pide campos no exportados con getters y setters; los setters con receptor puntero y que validen.</span></li>
+      <li data-paso="2"><span>Las funciones que pueden fallar devuelven <code>error</code>, y quien las llama lo maneja. Un <code>_</code> en lugar de <code>err</code> resta.</span></li>
+      <li data-paso="3"><span>Falta la interfaz: la vemos la próxima semana, la misma en que vence.</span></li>
+    </ul>
+    <p class="nota">Guía: <a href="../ver.html?f=entregas/aa2.md">Aprendizaje Autónomo 2</a>. Vence el domingo 6 de diciembre.</p>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Cómo usar el tutor</h2>
+    <ol>
+      <li>Abre el sitio del curso, <a href="https://carlosandresat.github.io/uide-poo-go-online/">carlosandresat.github.io/uide-poo-go-online</a>, y pulsa <strong>Copiar tutor</strong> en la semana 6. También puedes <a href="../ver.html?f=semana-06/tutor.md">abrirlo aquí</a>.</li>
+      <li>Pégalo completo en ChatGPT, Gemini o Claude (sirve la versión gratuita).</li>
+      <li>Conversa 20–30 minutos. Te hará preguntas y no te dará respuestas.</li>
+      <li>Al final, envía tu ticket de entrada en el <a href="https://forms.cloud.microsoft/r/ZhHFhJsKQE">formulario de tickets</a> hasta las 12:00 del lunes 30 de noviembre.</li>
+    </ol>
+    <p class="nota">Si tienes poco tiempo, escribe RÁPIDO al empezar: irá directo a las preguntas de control.</p>
+  </section>
+
+  <section class="diapositiva">
+    <h2>Antes de irnos</h2>
+    <ul class="cierre-lista">
+      <li><span class="que">Este domingo, 29 nov</span><span>Aprendizaje Práctico de la semana 5.</span></li>
+      <li><span class="que">Domingo 6 dic</span><span>Aprendizaje Autónomo 2.</span></li>
+      <li><span class="que">Si ves la grabación</span><span>Completa <code>ejemplos/ejercicio-encapsulacion</code> con tu entidad: campos privados, constructor que valida y devuelve error, getters sin <code>Get</code> y un setter con puntero. Maneja cada error en <code>main</code>. Luego predice los retos de <code>ejemplos/predice</code>.</span></li>
+      <li><span class="que">Próxima semana</span><span>Interfaces y el arranque técnico de tus servicios web. Antes, usa el <a href="../ver.html?f=semana-06/tutor.md">tutor de la semana 6</a>.</span></li>
+    </ul>
+  </section>
+
+</main>
+<script src="../assets/secuencia.js"></script>
+<script src="../assets/presentacion.js"></script>
+<script src="anim-errores.js"></script>
+</body>
+</html>

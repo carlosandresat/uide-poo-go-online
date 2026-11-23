@@ -2,8 +2,9 @@
    Teclas: → / Espacio / AvPág avanza · ← / RePág retrocede · Inicio / Fin · F pantalla completa
            D modo claro/oscuro · P puntero rojo (en tema.js) · L modo lectura · T inicia o pausa el temporizador de la diapositiva
    Atributos:
-     <body data-curso="poo-go" data-formato="taller|clinica|guiada|debate" data-bloque4="Ejercicio aplicado">
-       (clínica: data-bloque4 nombra el bloque 4; guiada: data-bloque2, 3 y 4 nombran los bloques centrales; debate: data-trabajo pone la explicación del trabajo en lugar de la pausa)
+     <body data-curso="poo-go" data-formato="taller|clinica|guiada|debate|laboratorio|investigar" data-bloque4="Ejercicio aplicado">
+       (clínica: data-bloque4 nombra el bloque 4; guiada: data-bloque2, 3 y 4 nombran los bloques centrales; debate e investigar: data-trabajo pone la explicación del trabajo en lugar de la pausa; investigar: data-ronda1 y data-ronda2 nombran el tema de cada ronda)
+     <button data-copiar-de="id"> copia al portapapeles el texto del elemento con ese id (p. ej., un pre.prompt)
      <section class="diapositiva" data-bloque="3"> o data-bloque="salas1": número o id del bloque
        (si falta, hereda el de la anterior). En las portadas de bloque, .numero, h2 y .minutos vacíos se completan solos.
      data-paso="n" en cualquier elemento: aparece en el paso n de esa diapositiva
@@ -75,6 +76,23 @@
       { id: 'salas2', nombre: 'Salas: argumentar', corto: 'Argumentar', ini: conTrabajo ? 75 : 60, fin: conTrabajo ? 90 : 75, noGraba: true },
       { id: 'plenaria2', nombre: 'Plenaria: debate', corto: 'Debate', ini: conTrabajo ? 90 : 75, fin: conTrabajo ? 105 : 100 },
       { id: 'cierre', nombre: 'Cierre', ini: conTrabajo ? 105 : 100, fin: 120 },
+    ],
+    // Investigar y debatir (Tecnología y Sociedad desde la semana 5): sin salas; dos rondas de 10 min de
+    // investigación individual con IA, cada una seguida de un debate con voluntarios.
+    // data-ronda1 y data-ronda2 nombran el tema de cada ronda. Con data-trabajo, el trabajo calificado (20 min)
+    // reemplaza la pausa y el cierre se acorta a 10 min.
+    investigar: [
+      { id: 'puente', nombre: 'Puente', ini: 0, fin: 10 },
+      { id: 'panorama', nombre: 'Panorama', ini: 10, fin: 30 },
+      { id: 'caso', nombre: 'Caso en vivo', ini: 30, fin: conTrabajo ? 40 : 45 },
+      { id: 'investigar1', nombre: 'Investigar' + (body.dataset.ronda1 ? ': ' + body.dataset.ronda1 : ' 1'), corto: 'Investigar 1', ini: conTrabajo ? 40 : 45, fin: conTrabajo ? 50 : 55 },
+      { id: 'debate1', nombre: 'Debate' + (body.dataset.ronda1 ? ': ' + body.dataset.ronda1 : ' 1'), corto: 'Debate 1', ini: conTrabajo ? 50 : 55, fin: conTrabajo ? 65 : 70 },
+      conTrabajo
+        ? { id: 'trabajo', nombre: 'Trabajo calificado', corto: 'Trabajo', ini: 65, fin: 85 }
+        : { pausa: true, ini: 70, fin: 75 },
+      { id: 'investigar2', nombre: 'Investigar' + (body.dataset.ronda2 ? ': ' + body.dataset.ronda2 : ' 2'), corto: 'Investigar 2', ini: conTrabajo ? 85 : 75, fin: conTrabajo ? 95 : 85 },
+      { id: 'debate2', nombre: 'Debate' + (body.dataset.ronda2 ? ': ' + body.dataset.ronda2 : ' 2'), corto: 'Debate 2', ini: conTrabajo ? 95 : 85, fin: conTrabajo ? 110 : 105 },
+      { id: 'cierre', nombre: 'Cierre', ini: conTrabajo ? 110 : 105, fin: 120 },
     ],
   };
   const bloques = BLOQUES[body.dataset.formato] || BLOQUES.taller;
@@ -279,6 +297,32 @@
       pintar();
     });
   }
+
+  /* ---------- Copiar un prompt: <button data-copiar-de="id-del-pre">Copiar prompt</button> ---------- */
+
+  document.querySelectorAll('button[data-copiar-de]').forEach((b) => {
+    const original = b.textContent;
+    b.addEventListener('click', async () => {
+      const fuente = document.getElementById(b.dataset.copiarDe);
+      if (!fuente) return;
+      let copiado = false;
+      try {
+        await navigator.clipboard.writeText(fuente.innerText.trim());
+        copiado = true;
+      } catch (err) {
+        // Respaldo: seleccionar el texto y usar el comando clásico de copiar
+        const rango = document.createRange();
+        rango.selectNodeContents(fuente);
+        const sel = getSelection();
+        sel.removeAllRanges();
+        sel.addRange(rango);
+        try { copiado = document.execCommand('copy'); } catch (e) { copiado = false; }
+        if (copiado) sel.removeAllRanges();
+      }
+      b.textContent = copiado ? 'Copiado ✓' : 'Texto seleccionado: cópialo con Ctrl + C';
+      setTimeout(() => { b.textContent = original; }, 2500);
+    });
+  });
 
   /* ---------- Teclado ---------- */
 
